@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}My Tasks{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div class="example-wrapper">
+    
+    <ul>
+    {% for user in users if user.active %}
+        <li>{{ user.username }}</li>
+    {% else %}
+        <li>No users found</li>
+    {% endfor %}
+    </ul>
+    
+    <h1>My Tasks</h1>
+    
+    <h2>My exams to submit</h2>
+    
+        <table>
+            <tr><td>Demand date</td><td>Deadline</td><tr>
+            {% for exam in myexams %}
+                <tr><td>{{exam.date}}</td> <td>{{exam.extern_dl}}</td></tr>
+            {% endfor %}
+        </table>
+    
+    <h2>Exams to vet</h2>
+    <h1>In Progress</h1>
+    <h2>My submissions</h2>
+    <h2>Vetted</h2>
+    <h2>Desapproved</h2>
+
+</div>
+{% endblock %}
