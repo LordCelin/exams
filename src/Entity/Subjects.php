@@ -57,7 +57,7 @@ class Subjects
         return $this->dptId;
     }
 
-    public function setDptName(int $dptName): self
+    public function setDptId(int $dptId): self
     {
         $this->dptId = $dptId;
 

@@ -2,11 +2,11 @@
 
 namespace App\Controller;
 
-use App\Entity\Task;
+use App\Entity\Exams;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
@@ -18,42 +18,39 @@ class AskingTaskController extends Controller
     
     public function new(Request $request)
     {
-        // creates a task and gives it some dummy data for this example
-        $task = new Task();
-        $task->setTask('Write a blog post');
-        $task->setDueDate(new \DateTime('tomorrow'));
+        
+        $exam = new Exams();
+        $exam->setSecrUserId('3');
+        $exam->setUserId('1');
+        $exam->setExternDl(new \DateTime('tomorrow'));
+        $exam->setDate(new \DateTime('now'));
+        $exam->setTitle('Title');
+        $exam->setInternDl(new \DateTime('tomorrow'));
+        $exam->setDateOfSubmit(new \DateTime('now'));
 
-        $form = $this->createFormBuilder($task)
-            ->add('task', TextType::class)
-            ->add('dueDate', DateType::class)
-            ->add('save', SubmitType::class, array('label' => 'Create Task'))
+        $form = $this->createFormBuilder($exam)
+            ->add('description', TextareaType::class, array('label' => 'Add a description for this exam: '))
+            ->add('externdl', DateType::class, array('label' => 'Choose a deadline: '))
+            ->add('save', SubmitType::class, array('label' => 'SUBMIT'))
             ->getForm();
         
         $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {
-        // $form->getData() holds the submitted values
-        // but, the original `$task` variable has also been updated
+        
         $task = $form->getData();
 
-        // ... perform some action, such as saving the task to the database
-        // for example, if Task is a Doctrine entity, save it!
-        // $entityManager = $this->getDoctrine()->getManager();
-        // $entityManager->persist($task);
-        // $entityManager->flush();
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($task);
+        $entityManager->flush();
 
-        return $this->redirectToRoute('task_success');
+        return $this->redirectToRoute('asking_task');
+        
+        }
 
         return $this->render('asking_task/index.html.twig', array(
             'form' => $form->createView(),
         ));
-    }
-    }
     
-    public function index()
-    {
-        return $this->render('asking_task/index.html.twig', [
-            'controller_name' => 'AskingTaskController',
-        ]);
     }
 }

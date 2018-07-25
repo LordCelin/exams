@@ -38,7 +38,7 @@ class Exams
     /**
      * @var string
      *
-     * @ORM\Column(name="title", type="string", length=32, nullable=false)
+     * @ORM\Column(name="title", type="string", length=32)
      */
     private $title;
 
@@ -52,21 +52,21 @@ class Exams
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date", type="datetime", nullable=false, options={"default"="CURRENT_TIMESTAMP"})
+     * @ORM\Column(name="date", type="datetime", nullable=false)
      */
-    private $date = 'CURRENT_TIMESTAMP';
+    private $date;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_of_submit", type="datetime", nullable=false)
+     * @ORM\Column(name="date_of_submit", type="datetime")
      */
     private $dateOfSubmit;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="intern_dl", type="datetime", nullable=false)
+     * @ORM\Column(name="intern_dl", type="datetime")
      */
     private $internDl;
 

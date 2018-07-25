@@ -8,10 +8,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Doctrine\ORM\EntityRepository;
 
 class FormSubjectController extends Controller
 {
@@ -25,32 +23,19 @@ class FormSubjectController extends Controller
         $repository = $this->getDoctrine()->getRepository(Departments::class);
         $mydepartments = $repository->findAll();
         
-//        $dptarray = array();
-//        foreach($mydepartments as &$value){
-//            $dptarray = [ 'id' => $mydepartments.getdptid(), 'nom' => $mydepartments.getdtpname()]
-//        }
-        
         $repository2 = $this->getDoctrine()->getRepository(Subjects::class);
         $mysubjbydpt = $repository2->findAll();
         
         $dpts = [];
         foreach($mydepartments as $line){
-            $dpts[] = $line;
+        $dpts[$line->getDptName()] = $line->getDptId();
         }
-        
-        
+                
         $newsubj = new Subjects();
 
         $form = $this->createFormBuilder($newsubj)
             ->add('subjname', TextType::class, array('label' => 'Add a new subject name: '))
-                
-                
-                // ICI CA MARCHE PAS
-            ->add('dptId', ChoiceType::class, array('choices' => $mysubjbydpt, 'label' => 'Choose in wich Department it is: '))
-            
-                // WALA
-                
-                
+            ->add('dptid', ChoiceType::class, array('choices' => $dpts, 'label' => 'Choose in wich Department it is: '))
             ->add('save', SubmitType::class, array('label' => 'SUBMIT'))
             ->getForm();
         

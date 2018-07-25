@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\Users;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+//use Symfony\Bridge\Doctrine\Security\User\UserLoaderInterface;
+//use Doctrine\ORM\EntityRepository;
 
 /**
  * @method Users|null find($id, $lockMode = null, $lockVersion = null)
@@ -12,7 +14,7 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  * @method Users[]    findAll()
  * @method Users[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class UsersRepository extends ServiceEntityRepository
+class UsersRepository extends ServiceEntityRepository //implements UserLoaderInterface
 {
     public function __construct(RegistryInterface $registry)
     {
@@ -47,4 +49,15 @@ class UsersRepository extends ServiceEntityRepository
         ;
     }
     */
+    
+//    public function loadUserByUserame($username)
+//    {
+//        return $this->createQueryBuilder('u')
+//            ->where('u.name = :name OR u.mail = :mail')
+//            ->setParameter('name', $username)
+//            ->setParameter('mail', $username)
+//            ->getQuery()
+//            ->getOneOrNullResult();
+//    }
+    
 }
