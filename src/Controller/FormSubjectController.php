@@ -26,6 +26,7 @@ class FormSubjectController extends Controller
         $repository2 = $this->getDoctrine()->getRepository(Subjects::class);
         $mysubjbydpt = $repository2->findAll();
         
+        // CREATE AN ARRAY WITH 
         $dpts = [];
         foreach($mydepartments as $line){
         $dpts[$line->getDptName()] = $line->getDptId();
