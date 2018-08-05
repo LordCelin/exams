@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello {{ controller_name }}!{% endblock %}
+{% block title %}Submit an exam{% endblock %}
 
 {% block body %}
 <style>
@@ -9,12 +9,12 @@
 </style>
 
 <div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    <h1>Submit an Exam</h1>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ 'src/Controller/SubmitController.php'|file_link(0) }}">src/Controller/SubmitController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'templates/submit/index.html.twig'|file_link(0) }}">templates/submit/index.html.twig</a></code></li>
-    </ul>
+{# templates/default/new.html.twig #}
+{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+{{ form_widget(form) }}
+    {{ form_row(form.file) }}
+{{ form_end(form) }}
 </div>
 {% endblock %}

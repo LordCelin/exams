@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Exam{% endblock %}
+
+{% block body %}
+
+<div class="example-wrapper">
+    <h2>{{myexam.title}} by {{owner.firstname}} {{owner.name}} - - Department of {{ownerdpt[0].dpt_name}}</h2>
+    
+    <h2>Original file</h2>
+    
+    <a dowload="{{ asset('uploads/files/' ~ myexam.filename) }}">Download</a>
+    
+    <a href="{{ path('validation', {'valid_id': valid_id }) }}">Validate this exam</a> | <a href="{{ path('modification', {'valid_id': valid_id }) }}">Propose modifications</a>
+    
+    <h2>See other versions from validators</h2>
+    
+        <table>
+            {% for valid in allvalidations %}
+            <tr><td><a href="{{ asset('uploads/files/' ~ valid.file) }}">Download</a></td><td>{{valid.comment}}</td></tr>
+            {% endfor %}
+        </table>
+</div>
+{% endblock %}

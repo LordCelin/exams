@@ -10,34 +10,49 @@
     
     <h2>My exams to submit</h2>
     
+    {% for exam in myexams %}    
         <table>
-            <tr><td>date</td><td>Description</td><td>Deadline</td><tr>
-            {% for exam in myexams %}
-                <tr><td>{{exam.date}}</td><td>{{exam.description}}</td><td>{{exam.extern_dl}}</td></tr>
-            {% endfor %}
+            <tr><td>date</td><td>Description</td><td>Deadline</td><td>Task</td><tr>
+            <tr><td>{{exam.date}}</td><td>{{exam.description}}</td><td>{{exam.extern_dl}}</td><td><a href="{{ path('submit', {'exam_id': exam.exam_id }) }}">Submit</a></td></tr>
         </table>
+    {% endfor %}
     
     <h2>Exams to vet</h2>
     
-    <table><tr><td>date</td><td>Description</td><td>Deadline</td><tr></table>
+    {% for exam in examstovet %}    
+        <table>
+            <tr><td>date</td><td>Description</td><td>Deadline</td><td>Task</td><tr>
+            <tr><td>{{exam.date}}</td><td>{{exam.description}}</td><td>{{exam.extern_dl}}</td><td><a href="{{ path('exam_view', {'exam_id': exam.exam_id }) }}">Vet</a></td></tr>
+        </table>
+    {% endfor %}
     
     <h1>In Progress</h1>
     <h2>My submissions</h2>
     
-    <table>
-            <tr><td>date</td><td>Title</td><td>Validations</td><td>No valid</td><td>Deadline</td><tr>
-            {% for exa in myoldsub %}
-                <tr><td>{{exa.date}}</td><td>{{exa.title}}</td><td></td><td></td><td>{{exa.extern_dl}}</td></tr>
-            {% endfor %}
-    </table>
+    {% for exam in myoldsub %}    
+        <table>
+            <tr><td>date</td><td>Title</td><td>Total</td><td>Validations</td><td>Not validated</td><td>Deadline</td><td>Task</td><tr>
+            <tr><td>{{exam.date}}</td><td>{{exam.title}}</td><td>{{totalvetted[0].nb + totalnonvetted[0].nb}} / {{totalvalidations[0].nb}}</td><td>{{totalvetted[0].nb}} / {{totalvalidations[0].nb}}</td><td>{{totalnonvetted[0].nb}} / {{totalvalidations[0].nb}}</td><td>{{exam.extern_dl}}</td><td><a href="{{ path('exam_view', {'exam_id': exam.exam_id }) }}">See</a> / <a href="{{ path('owner_validation', {'exam_id': exam.exam_id }) }}">Validate</a></td></tr>
+        </table>
+    {% endfor %}
     
     <h2>Vetted</h2>
     
-    <table><tr><td>date</td><td>Title</td><td>Validations</td><td>No valid</td><td>Deadline</td><tr></table>
+    {% for exam in myvetted %}    
+        <table>
+            <tr><td>date</td><td>Title</td><td>Status</td><td>Deadline</td><td>Task</td><tr>
+            <tr><td>{{exam.date}}</td><td>{{exam.title}}</td><td>{{exam.exam_status}}</td><td>{{exam.extern_dl}}</td><td><a href="{{ path('exam_view', {'exam_id': exam.exam_id }) }}">See</a></td></tr>
+        </table>
+    {% endfor %}
         
     <h2>Desapproved</h2>
     
-    <table><tr><td>date</td><td>Title</td><td>Validations</td><td>No valid</td><td>Deadline</td><tr></table>
+    {% for exam in mynonvetted %}    
+        <table>
+            <tr><td>date</td><td>Title</td><td>Status</td><td>Deadline</td><td>Task</td><tr>
+            <tr><td>{{exam.date}}</td><td>{{exam.title}}</td><td>{{exam.exam_status}}</td><td>{{exam.extern_dl}}</td><td><a href="{{ path('exam_view', {'exam_id': exam.exam_id }) }}">See</a></td></tr>
+        </table>
+    {% endfor %}
 
 </div>
 {% endblock %}

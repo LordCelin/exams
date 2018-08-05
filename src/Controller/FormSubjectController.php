@@ -17,7 +17,7 @@ class FormSubjectController extends Controller
      * @Route("/form/subject", name="form_subject")
      */
     
-    public function new(Request $request)
+    public function addSubjects(Request $request)
     {
         
         $repository = $this->getDoctrine()->getRepository(Departments::class);

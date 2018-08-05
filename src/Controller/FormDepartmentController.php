@@ -15,7 +15,7 @@ class FormDepartmentController extends Controller
      * @Route("/form/department", name="form_department")
      */
     
-    public function new(Request $request)
+    public function AddDepartments(Request $request)
     {
         $newdpt = new Departments();
 

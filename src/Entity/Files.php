@@ -34,13 +34,20 @@ class Files
      * @ORM\Column(name="exam_status", type="boolean", nullable=false)
      */
     private $examStatus;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="file_name", type="string", length=64, nullable=false)
+     */
+    private $fileName;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="file_link", type="string", length=64, nullable=false)
+     * @ORM\Column(name="file_path", type="string", length=64, nullable=false)
      */
-    private $fileLink;
+    private $filePath;
 
     public function getFileId(): ?int
     {
@@ -79,6 +86,30 @@ class Files
     public function setFileLink(string $fileLink): self
     {
         $this->fileLink = $fileLink;
+
+        return $this;
+    }
+
+    public function getFileName(): ?string
+    {
+        return $this->fileName;
+    }
+
+    public function setFileName(string $fileName): self
+    {
+        $this->fileName = $fileName;
+
+        return $this;
+    }
+
+    public function getFilePath(): ?string
+    {
+        return $this->filePath;
+    }
+
+    public function setFilePath(string $filePath): self
+    {
+        $this->filePath = $filePath;
 
         return $this;
     }
