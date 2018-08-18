@@ -2,34 +2,52 @@
 
 {% block title %}Edit Subjects{% endblock %}
 
+{% block nav %}    
+<nav class="navbar navbar-light" style="background-color: #E0E0E0;">
+    <p>Hi Admin</p> <a href="{{ path('logout') }}" class="btn btn-dark">Logout</a>
+</nav>
+{% endblock %}
+
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
 
-<div class="example-wrapper">
-    <h1>Subjects</h1>
-
-{# templates/default/new.html.twig #}
-{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
-{{ form_widget(form) }}
-{{ form_end(form) }}
-
-
-<h2>List of subjects</h2>
-    <ol>
-            {% for dpt in mydepartments %}
-                <li>{{dpt.getdptname}}
-                <ul>{% for sub in mysubjbydpt %}
-                    {% if dpt.dptId == sub.dptId %}
-                    <li>{{sub.getsubjname}}</li>
-                    {% endif %}
-                    {% endfor %}</ul></li>
-            {% endfor %}
-    </ol>
-  
+<div class="container bg-light">
+    <br/>
+    <h2 class="p-2 mb-2 bg-info text-center">Add a subject</h2>
+    <div class="container">
+        <div class="text-right">
+            <a href="{{ path('admin_home') }}" class="btn btn-dark">Back to Home</a>
         </div>
+        <div class="container">
+            {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+                {{ form_widget(form) }}
+            {{ form_end(form) }}
+        </div>
+    </div>
+    <h3 class="p-2 mb-2 bg-info text-center">List of subjects</h3>
+    <ul>
+        {% for dpt in mydepartments %}
+            <li>
+                {{dpt.getdptname}}
+            </li>
+                <table>
+                {% for sub in mysubjbydpt %}
+                    <tr>
+                        {% if dpt.dptId == sub.dptId %}
+                            <td>
+                                {{sub.getsubjname}}
+                            </td>
+                            <td>                                
+                                <a href="{{ path('edit_subject', {'subj_id': sub.getSubjId }) }}" class="btn btn-info">Edit</a> 
+                            </td>
+                        {% endif %}    
+                    </tr>
+                {% endfor %}    
+                </table>  
+            {% endfor %}
+    </ul>
+    <br/>
+  
+</div>
             
 {% endblock %}
 

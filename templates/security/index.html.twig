@@ -3,32 +3,35 @@
 {% block title %}Login{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
 
-<div class="example-wrapper">
-    <h1>WHO ARE YOU??</h1>
-
+<div class="container bg-secondary text-center">
+    <br/>
+    <p>Welcome to the Exam Manager</p>
+    <br/>
+    <h1 class="p-2 mb-2 bg-info">Login</h1>
+    <br/>
 {% if error %}
     <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
 {% endif %}
 
 <form action="{{ path('login') }}" method="post">
-    <label for="username">Username:</label>
+    <label for="username">Username: </label>
+    <br/>
     <input type="text" id="username" name="_username" value="{{ last_username }}" />
 
-    <label for="password">Password:</label>
+    <br/>
+    <br/>
+    <label for="password">Password: </label>
+    <br/>
     <input type="password" id="password" name="_password" />
-
-    {#
-        If you want to control the URL the user
-        is redirected to on success (more details below)
-        <input type="hidden" name="_target_path" value="/account" />
-    #}
+    <br/>
+    <br/>
 
     <button type="submit">login</button>
+    
+    <br/>
+    <br/>
+    <br/>
 </form>
 </div>
 {% endblock %}

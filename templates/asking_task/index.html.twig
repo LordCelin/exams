@@ -4,14 +4,17 @@
 
 {% block body %}
 
-<div class="example-wrapper">
-
-    <h1>Ask for an Exam</h1>
-
-{# templates/default/new.html.twig #}
-{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
-{{ form_widget(form) }}
-{{ form_end(form) }}
-
+<div class="container bg-light">
+    <br/>
+    <h2 class="p-2 mb-2 bg-info text-center">Ask for an Exam</h2>
+    <div class="container">
+        <div class="text-right">
+            <a href="{{ path('redirect') }}" class="btn btn-dark">Back to Home</a>
+        </div>
+        {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+            {{ form_widget(form) }}
+        {{ form_end(form) }}
+    <br/>
+    </div>
 </div>
 {% endblock %}

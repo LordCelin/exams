@@ -1,0 +1,193 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}My Tasks{% endblock %}
+
+{% block body %}
+
+<div class='container bg-light'>
+    <br/>
+    <div class="text-right">
+        <a href="{{ path('redirect') }}" class="btn btn-dark">Back to Home</a>
+    </div>
+    <br/>
+    <h3 class="p-2 mb-2 bg-info text-center">Exams waiting for submission</h3>
+    
+    <br/>   
+    <table class="table table-sm table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>Date (y-m-d)</th>
+                <th>Asker</th>
+                <th>Description</th>
+                <th>Submitter</th>
+                <th>Internal Deadline (y-m-d)</th>
+                <th>Deadline (y-m-d)</th>
+                <th></th>
+            <tr>
+        </thead>
+        {% for exam in askedexams %}
+            <tr class="table-warning">
+                <td>{{exam.date}}</td>
+                <td>
+                    {% for user in users %}
+                        {% if user.getUserId == exam.secr_user_id %}
+                            {{user.firstname}} {{user.name}}
+                        {% endif %}
+                    {% endfor %}
+                </td>
+                <td>{{exam.description}}</td>
+                <td>
+                    {% for user in users %}
+                        {% if user.getUserId == exam.user_id %}
+                            {{user.firstname}} {{user.name}}
+                        {% endif %}
+                    {% endfor %}
+                </td>
+                <td>{{exam.intern_dl}}</td>
+                <td>{{exam.extern_dl}}</td>
+                <td><a href="{{ path('delete_exam', {'exam_id': exam.exam_id }) }}" onclick="return confirm('Delete this exam?')" class="btn btn-danger">Delete</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+    <br/>
+   
+    
+    <br/>
+    <h3 class="p-2 mb-2 bg-info text-center">Submitted Exams, waiting for internal validations</h3>
+    
+    <br/>   
+    <table class="table table-sm table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>Date (y-m-d)</th>
+                <th>Asker</th>
+                <th>Submission (y-m-d)</th>
+                <th>Submitter</th>
+                <th>Title</th>
+                <th>Internal Deadline (y-m-d)</th>
+                <th>Deadline (y-m-d)</th>
+                <th></th>
+                <th></th>
+            <tr>
+        </thead>
+        {% for exam in submit %}
+            <tr class="table-warning">
+                <td>{{exam.date}}</td>
+                <td>
+                    {% for user in users %}
+                        {% if user.getUserId == exam.secr_user_id %}
+                            {{user.firstname}} {{user.name}}
+                        {% endif %}
+                    {% endfor %}
+                </td>
+                <td>{{exam.date_of_submit}}</td>
+                <td>
+                    {% for user in users %}
+                        {% if user.getUserId == exam.user_id %}
+                            {{user.firstname}} {{user.name}}
+                        {% endif %}
+                    {% endfor %}
+                </td>
+                <td>{{exam.title}}</td>
+                <td>{{exam.intern_dl}}</td>
+                <td>{{exam.extern_dl}}</td>
+                <td><a href="{{ path('exam_view', {'exam_id': exam.exam_id }) }}" class="btn btn-info">See</a></td>
+                <td><a href="{{ path('delete_exam', {'exam_id': exam.exam_id }) }}" onclick="return confirm('Delete this exam?')" class="btn btn-danger">Delete</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+    <br/>
+    
+    <br/>
+    <h3 class="p-2 mb-2 bg-info text-center">Exams vetted by interns, waiting for external validations</h3>
+    
+    <br/>   
+    <table class="table table-sm table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>Date (y-m-d)</th>
+                <th>Asker</th>
+                <th>Submission (y-m-d)</th>
+                <th>Submitter</th>
+                <th>Title</th>
+                <th>Internal Deadline (y-m-d)</th>
+                <th>Deadline (y-m-d)</th>
+                <th></th>
+                <th></th>
+            <tr>
+        </thead>
+        {% for exam in first %}
+            <tr class="table-warning">
+                <td>{{exam.date}}</td>
+                <td>
+                    {% for user in users %}
+                        {% if user.getUserId == exam.secr_user_id %}
+                            {{user.firstname}} {{user.name}}
+                        {% endif %}
+                    {% endfor %}
+                </td>
+                <td>{{exam.date_of_submit}}</td>
+                <td>
+                    {% for user in users %}
+                        {% if user.getUserId == exam.user_id %}
+                            {{user.firstname}} {{user.name}}
+                        {% endif %}
+                    {% endfor %}
+                </td>
+                <td>{{exam.title}}</td>
+                <td>{{exam.intern_dl}}</td>
+                <td>{{exam.extern_dl}}</td>
+                <td><a href="{{ path('exam_view', {'exam_id': exam.exam_id }) }}" class="btn btn-info">See</a></td>
+                <td><a href="{{ path('delete_exam', {'exam_id': exam.exam_id }) }}" onclick="return confirm('Delete this exam?') " class="btn btn-danger">Delete</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+    <br/>
+    
+    <br/>
+    <h3 class="p-2 mb-2 bg-info text-center">Vetted Exams</h3>
+    <p class="text-danger">Be sure the final exam file has been saved by secretariat or head of department before to delete it.</p>
+    <table class="table table-sm table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>Date (y-m-d)</th>
+                <th>Asker</th>
+                <th>Submission (y-m-d)</th>
+                <th>Submitter</th>
+                <th>Title</th>
+                <th>Internal Deadline (y-m-d)</th>
+                <th>Deadline (y-m-d)</th>
+                <th></th>
+                <th></th>
+            <tr>
+        </thead>
+        {% for exam in sec %}
+            <tr class="table-warning">
+                <td>{{exam.date}}</td>
+                <td>
+                    {% for user in users %}
+                        {% if user.getUserId == exam.secr_user_id %}
+                            {{user.firstname}} {{user.name}}
+                        {% endif %}
+                    {% endfor %}
+                </td>
+                <td>{{exam.date_of_submit}}</td>
+                <td>
+                    {% for user in users %}
+                        {% if user.getUserId == exam.user_id %}
+                            {{user.firstname}} {{user.name}}
+                        {% endif %}
+                    {% endfor %}
+                </td>
+                <td>{{exam.title}}</td>
+                <td>{{exam.intern_dl}}</td>
+                <td>{{exam.extern_dl}}</td>
+                <td><a href="{{ path('exam_view', {'exam_id': exam.exam_id }) }}" class="btn btn-info">See</a></td>
+                <td><a href="{{ path('delete_exam', {'exam_id': exam.exam_id }) }}" onclick="return confirm('Delete this exam?')" class="btn btn-danger">Delete</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+    <br/>
+</div>
+{% endblock %}
+

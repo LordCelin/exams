@@ -3,56 +3,153 @@
 {% block title %}My Tasks{% endblock %}
 
 {% block body %}
+    
+<div class="p-2 mb-2 text-right">
+    {% if currentuser.hod == 1 %}
+        <a href="{{ path('asking_task') }}" class="btn btn-info">Ask for an exam</a>
+        <a href="{{ path('in_progress') }}" class="btn btn-info">See exams in progress</a>
+    {% endif %}
+    <a href="{{ path('parameters') }}" class="btn btn-dark">Parameters</a>
+</div>
 
-<div class="example-wrapper">
+<div class='container bg-light'>
     
-    <h1>My Tasks</h1>
-    
-    <h2>My exams to submit</h2>
-    
+    <br/>
+    <h2 class="p-2 mb-2 bg-info text-center">My Tasks</h2>
+    <div class='container'>
+    <h3>My exams to submit</h3>
+    <br/>
     {% for exam in myexams %}    
-        <table>
-            <tr><td>date</td><td>Description</td><td>Deadline</td><td>Task</td><tr>
-            <tr><td>{{exam.date}}</td><td>{{exam.description}}</td><td>{{exam.extern_dl}}</td><td><a href="{{ path('submit', {'exam_id': exam.exam_id }) }}">Submit</a></td></tr>
+        <table class="table table-sm table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Date (y-m-d)</th>
+                    <th>Asker</th>
+                    <th>Description</th>
+                    <th>Deadline (y-m-d)</th>
+                    <th>Task</th>
+                <tr>
+            </thead>
+            <tr class="table-warning">
+                <td>{{exam.date}}</td>
+                <td>
+                    {% for user in users %}
+                        {% if user.getUserId == exam.secr_user_id %}
+                            {{user.firstname}} {{user.name}}
+                        {% endif %}
+                    {% endfor %}
+                </td>
+                <td>{{exam.description}}</td>
+                <td>{{exam.extern_dl}}</td>
+                <td><a href="{{ path('submit', {'exam_id': exam.exam_id }) }}" class="btn btn-info">Submit</a></td>
+            </tr>
         </table>
+        <br/>
     {% endfor %}
     
-    <h2>Exams to vet</h2>
-    
+    <h3>Exams to vet</h3>
+    <br/>
     {% for exam in examstovet %}    
-        <table>
-            <tr><td>date</td><td>Description</td><td>Deadline</td><td>Task</td><tr>
-            <tr><td>{{exam.date}}</td><td>{{exam.description}}</td><td>{{exam.extern_dl}}</td><td><a href="{{ path('exam_view', {'exam_id': exam.exam_id }) }}">Vet</a></td></tr>
+        <table class="table table-sm table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Submitter</th>
+                    <th>Submission (y-m-d)</th>
+                    <th>Title</th>
+                    <th>Internal Deadline (y-m-d)</th>
+                    <th>Deadline (y-m-d)</th>
+                    <th>Task</th>
+                </tr>
+            </thead>
+            <tr class="table-warning">
+                <td>
+                    {% for user in users %}
+                        {% if user.getUserId == exam.user_id %}
+                            {{user.firstname}} {{user.name}}
+                        {% endif %}
+                    {% endfor %}
+                </td>
+                <td>{{exam.date_of_submit}}</td>
+                <td>{{exam.title}}</td>
+                <td>{{exam.intern_dl}}</td>
+                <td>{{exam.extern_dl}}</td>
+                <td><a href="{{ path('exam_view', {'exam_id': exam.exam_id }) }}" class="btn btn-info">Vet</a></td>
+            </tr>
         </table>
+        <br/>
     {% endfor %}
-    
-    <h1>In Progress</h1>
-    <h2>My submissions</h2>
-    
+    </div>
+    <h2 class="p-2 mb-2 bg-info text-center">In Progress</h2>
+    <div class='container'>
+    <h3>My submissions</h3>
+    <br/>
     {% for exam in myoldsub %}    
-        <table>
-            <tr><td>date</td><td>Title</td><td>Total</td><td>Validations</td><td>Not validated</td><td>Deadline</td><td>Task</td><tr>
-            <tr><td>{{exam.date}}</td><td>{{exam.title}}</td><td>{{totalvetted[0].nb + totalnonvetted[0].nb}} / {{totalvalidations[0].nb}}</td><td>{{totalvetted[0].nb}} / {{totalvalidations[0].nb}}</td><td>{{totalnonvetted[0].nb}} / {{totalvalidations[0].nb}}</td><td>{{exam.extern_dl}}</td><td><a href="{{ path('exam_view', {'exam_id': exam.exam_id }) }}">See</a> / <a href="{{ path('owner_validation', {'exam_id': exam.exam_id }) }}">Validate</a></td></tr>
+        <table class="table table-sm table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Submission (y-m-d)</th>
+                    <th>Title</th>
+                    <th>Total</th>
+                    <th>Validated</th>
+                    <th>Not validated</th>
+                    <th>Internal Deadline (y-m-d)</th>
+                    <th>Deadline (y-m-d)</th>
+                    <th>Task</th>
+                <tr>
+            </thead>
+            <tr class="table-warning">
+                <td>{{exam.date_of_submit}}</td>
+                <td>{{exam.title}}</td>
+                <td>{{totalvetted[exam.exam_id] + totalnonvetted[exam.exam_id]}} / {{totalvalidations[exam.exam_id]}}</td>
+                <td>{{totalvetted[exam.exam_id]}} / {{totalvalidations[exam.exam_id]}}</td>
+                <td>{{totalnonvetted[exam.exam_id]}} / {{totalvalidations[exam.exam_id]}}</td>
+                <td>{{exam.intern_dl}}</td>
+                <td>{{exam.extern_dl}}</td>
+                <td><a href="{{ path('exam_view', {'exam_id': exam.exam_id }) }}" class="btn btn-info">See</a><a href="{{ path('owner_validation', {'exam_id': exam.exam_id }) }}" class="btn btn-info">Validate</a></td>
+            </tr>
         </table>
+        <br/>
     {% endfor %}
     
-    <h2>Vetted</h2>
-    
-    {% for exam in myvetted %}    
-        <table>
-            <tr><td>date</td><td>Title</td><td>Status</td><td>Deadline</td><td>Task</td><tr>
-            <tr><td>{{exam.date}}</td><td>{{exam.title}}</td><td>{{exam.exam_status}}</td><td>{{exam.extern_dl}}</td><td><a href="{{ path('exam_view', {'exam_id': exam.exam_id }) }}">See</a></td></tr>
+    <h3>My vets</h3>
+    <br/>
+    {% for exam in myvets %}    
+        <table class="table table-sm table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Submitter</th>
+                    <td>Submission (y-m-d)</td>
+                    <td>Title</td>
+                    <td>Status</td>
+                    <td>Deadline (y-m-d)</td>
+                    <td>Task</td>
+                <tr>
+            </thead>
+            <tr class="table-warning">
+                <td>
+                    {% for user in users %}
+                        {% if user.getUserId == exam.user_id %}
+                            {{user.firstname}} {{user.name}}
+                        {% endif %}
+                    {% endfor %}
+                </td>
+                <td>{{exam.date_of_submit}}</td>
+                <td>{{exam.title}}</td>
+                <td>
+                    {% if exam.exam_status == 1 %}
+                        Waiting for intern. valid.
+                        {% elseif exam.exam_status == 2 %}
+                            Waiting for ext. valid.
+                            {% else %}
+                                Vetted
+                    {% endif %}
+                </td>
+                <td>{{exam.extern_dl}}</td>
+                <td><a href="{{ path('exam_view', {'exam_id': exam.exam_id }) }}" class="btn btn-info">See</a></td>
+            </tr>
         </table>
+        <br/>
     {% endfor %}
-        
-    <h2>Desapproved</h2>
-    
-    {% for exam in mynonvetted %}    
-        <table>
-            <tr><td>date</td><td>Title</td><td>Status</td><td>Deadline</td><td>Task</td><tr>
-            <tr><td>{{exam.date}}</td><td>{{exam.title}}</td><td>{{exam.exam_status}}</td><td>{{exam.extern_dl}}</td><td><a href="{{ path('exam_view', {'exam_id': exam.exam_id }) }}">See</a></td></tr>
-        </table>
-    {% endfor %}
-
+    </div>
 </div>
 {% endblock %}

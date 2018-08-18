@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Entity\Users;
 
 /**
  * Exams
@@ -40,7 +41,7 @@ class Exams
     /**
      * @var string
      *
-     * @ORM\Column(name="title", type="string", length=32)
+     * @ORM\Column(name="title", type="string", length=32, nullable=true)
      */
     private $title;
 
@@ -61,44 +62,44 @@ class Exams
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_of_submit", type="datetime")
+     * @ORM\Column(name="date_of_submit", type="datetime", nullable=true)
      */
     private $dateOfSubmit;
 
     /**
-     * @var \DateTime
+     * @var \Date
      *
-     * @ORM\Column(name="intern_dl", type="datetime")
+     * @ORM\Column(name="intern_dl", type="date", nullable=true)
      */
     private $internDl;
 
     /**
-     * @var \DateTime
+     * @var \Date
      *
-     * @ORM\Column(name="extern_dl", type="datetime", nullable=false)
+     * @ORM\Column(name="extern_dl", type="date", nullable=false)
      */
     private $externDl;
     
     //EXAM_STATUS : 0 = ASKED BY SECRETARY MEMBER, 1 = SUBMITTED, 2 = VALIDATED BY INTERNS, 3 = VALIDATED BY EXTERNS
 
     /**
-     * @var bool
+     * @var int
      *
-     * @ORM\Column(name="exam_status", type="smallint", nullable=false)
+     * @ORM\Column(name="exam_status", type="integer", nullable=false)
      */
     private $examStatus = '0';
     
      /**
      * @var string
      *
-     * @ORM\Column(name="file_name", type="string", length=64, nullable=false)
+     * @ORM\Column(name="file_name", type="string", length=64, nullable=true)
      */
     private $fileName;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="file_path", type="string", length=64, nullable=false)
+     * @ORM\Column(name="file_path", type="string", length=64, nullable=true)
      */
     private $filePath;
     
@@ -218,12 +219,12 @@ class Exams
         return $this;
     }
 
-    public function getExamStatus(): ?bool
+    public function getExamStatus(): ?int
     {
         return $this->examStatus;
     }
 
-    public function setExamStatus(bool $examStatus): self
+    public function setExamStatus(int $examStatus): self
     {
         $this->examStatus = $examStatus;
 

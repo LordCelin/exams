@@ -8,13 +8,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class FormDepartmentController extends Controller
 {
     /**
      * @Route("/form/department", name="form_department")
-     */
-    
+     * 
+     * @Security("has_role('ROLE_ADMIN')")
+     */    
     public function AddDepartments(Request $request)
     {
         $newdpt = new Departments();

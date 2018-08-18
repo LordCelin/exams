@@ -38,30 +38,30 @@ class Validations
     private $userId;
 
     /**
-     * @var bool
+     * @var int
      *
-     * @ORM\Column(name="valid_status", type="smallint", nullable=false)
+     * @ORM\Column(name="valid_status", type="integer", nullable=false)
      */
     private $validStatus = '0';
 
     /**
      * @var string
      *
-     * @ORM\Column(name="comment", type="text", length=65535, nullable=false)
+     * @ORM\Column(name="comment", type="text", length=65535, nullable=true)
      */
     private $comment;
     
      /**
      * @var string
      *
-     * @ORM\Column(name="file_name", type="string", length=64, nullable=false)
+     * @ORM\Column(name="file_name", type="string", length=64, nullable=true)
      */
     private $fileName;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="file_path", type="string", length=64, nullable=false)
+     * @ORM\Column(name="file_path", type="string", length=64, nullable=true)
      */
     private $filePath;
     
@@ -109,12 +109,12 @@ class Validations
         return $this;
     }
 
-    public function getValidStatus(): ?bool
+    public function getValidStatus(): ?int
     {
         return $this->validStatus;
     }
 
-    public function setValidStatus(bool $validStatus): self
+    public function setValidStatus(int $validStatus): self
     {
         $this->validStatus = $validStatus;
 

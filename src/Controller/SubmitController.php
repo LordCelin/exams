@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use Symfony\Component\Routing\Annotation\Route;
-use App\Entity\Users;
+use App\Utils\Tasks;
 use App\Entity\Exams;
 use App\Entity\Validations;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -21,15 +21,26 @@ class SubmitController extends Controller
      */
     public function submitExam($exam_id, Request $request, Connection $connection)
     {
+            // RETURN LOGIN PAGE IF USER IS NOT CONNECTED
+        if ($this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY'))
+        {
+            return $this->redirectToRoute('login');
+        }
         
-            // PICK INFORMATION FROM CONNECTED USER        
+            // PICK INFORMATION FROM CONNECTED USER
         $currentuser = $this->getUser();
         $id = $currentuser->getUserId();
         $dpt = $currentuser->getDptId();
         
-            // MODIFY THE RIGHT EXAM        
+            // MODIFY THE RIGHT EXAM
         $repository = $this->getDoctrine()->getRepository(Exams::class);
         $myexam = $repository->findOneBy(['examId' => $exam_id]);
+        
+            // RESTRICT ACCESS
+        if ($myexam->getUserId() != $id)
+        {
+            return $this->redirectToRoute('error');
+        }
         
         $myexam->setDateOfSubmit(new \DateTime('now'));
         
@@ -56,42 +67,19 @@ class SubmitController extends Controller
             $entityManager->flush();
             
                 // FILE
-            
-            /** @var Symfony\Component\HttpFoundation\File\UploadedFile $file */
             $file = $myexam->getFile();
             
-            $fileName = $myexam->getTitle().'.'.$file->guessExtension();
+            $fileName = $myexam->getExamId().'_00.'.$file->guessExtension();
 
-            // moves the file to the directory where brochures are stored
             $file->move(
                 $this->getParameter('files_directory'),
                 $fileName
             );
 
-            // updates the 'brochure' property to store the PDF file name
-            // instead of its contents
             $myexam->setFileName($fileName);
-
-            // ... persist the $product variable or any other work
             
-                // CREATE A LINE IN VALIDATION FOR EACH TEACHER IN THE DEPARTMENT
-                // PICK TEACHERS EXEPT CONNECTED USER
-            $userofmydpt = $connection->fetchAll("SELECT * FROM users WHERE dpt_id = $dpt AND secretary_member = 0 AND user_id <> $id");
-            
-                // CREATE VALIDATIONS WITH SOME RANDOM IN NOT NULL AREAS
-            foreach($userofmydpt as $usr)
-            {
-                $valid = new Validations();
-                $valid->setExamId($exam_id);
-                $valid->setUserId($usr['user_id']);
-                $valid->setComment('comment');
-                $valid->setFileName('file');
-                $valid->setFilePath('path');
-                
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->persist($valid);
-                $entityManager->flush();                
-            }
+                // CREATE NEW VALIDATIONS LINES IN DB AND SEND MAIL NOTIFICATIONS
+            Tasks::newValidations($connection, $exam_id, 1, $id, $dpt, $entityManager);
             
             return $this->redirectToRoute('home');
 
@@ -100,14 +88,5 @@ class SubmitController extends Controller
         return $this->render('submit/index.html.twig', [
             'form' => $form->createView(),
         ]);
-    }
-    
-//    public function configureOptions(OptionsResolver $resolver)
-//    {
-//        $resolver->setDefaults(array(
-//            'data_class' => Exams::class,
-//        ));
-//    }
-
-    
+    }    
 }

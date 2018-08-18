@@ -4,21 +4,61 @@
 
 {% block body %}
 
-<div class="example-wrapper">
-    <h2>{{myexam.title}} by {{owner.firstname}} {{owner.name}} - - Department of {{ownerdpt[0].dpt_name}}</h2>
+<div class="container bg-light">
+    <br/>
+    <div class="text-right">
+        <a href="{{ path('home') }}" class="btn btn-dark">Back to Home</a>
+    </div>
+    <br/>
+    <h4 class="p-2 mb-2 bg-info text-center">{{myexam.title}} by {{owner.firstname}} {{owner.name}} - - Department of {{ownerdpt[0].dpt_name}}</h4>
     
-    <h2>Original file</h2>
+    <h3>Original file</h3>
     
-    <a dowload="{{ asset('uploads/files/' ~ myexam.filename) }}">Download</a>
+    <a href="/uploads/files/{{ myexam.filename }}">See</a>
     
-    <a href="{{ path('validation', {'valid_id': valid_id }) }}">Validate this exam</a> | <a href="{{ path('modification', {'valid_id': valid_id }) }}">Propose modifications</a>
+    {% if id != owner.userId %}
+        <a href="{{ path('validation', {'valid_id': myvalid.valiId }) }}" class="btn btn-info">Validate this exam</a> | <a href="{{ path('modification', {'valid_id': valid_id.valid_id }) }}" class="btn btn-warning">Propose modifications</a>
+    {% endif %}
     
-    <h2>See other versions from validators</h2>
+    <h3>See other versions from validators</h3>
     
-        <table>
-            {% for valid in allvalidations %}
-            <tr><td><a href="{{ asset('uploads/files/' ~ valid.file) }}">Download</a></td><td>{{valid.comment}}</td></tr>
-            {% endfor %}
-        </table>
+    <table>
+        {% for valid in modified %}
+            <tr>
+                <td>
+                    {% for user in users %}
+                        {% if user.getUserId == valid.user_id %}
+                            {{user.firstname}} {{user.name}}
+                        {% endif %}
+                    {% endfor %}
+                </td>
+                <td>
+                    <a href="/uploads/files/{{ valid.filename }}">See</a>
+                </td>
+                <td>
+                    {{valid.comment}}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+        
+    <br/>
+    <h5>This exam has been validated by</h5>
+    <table>
+        {% for valid in validated %}
+            <tr>
+                <td>
+                    {% for user in users %}
+                        {% if user.getUserId == valid.user_id %}
+                            {{user.firstname}} {{user.name}}
+                        {% endif %}
+                    {% endfor %}
+                </td>
+                <td>
+                    {{valid.comment}}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
 </div>
 {% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Home{% endblock %}
+
+{% block body %}
+<div class="p-2 mb-2 text-right">
+    <a href="{{ path('parameters') }}" class="btn btn-dark">Parameters</a>
+</div>
+<div class="container bg-light text-center">
+    <br/>
+    <h3>Welcome on your dashboard</h3>
+    <br/>
+    <p>You are connected as a secretary member, you can ask for a new exam or see exams in progress in your department.</p>
+    <br/>
+    <br/>
+    <h4>What do you want to do?</h4>
+    <br/>
+    <a href="{{ path('asking_task') }}" class="btn btn-info">Submit a new exam</a> <a href="{{ path('in_progress') }}" class="btn btn-info">See exams in progress</a>
+    <br/>
+    <br/>
+</div>
+{% endblock %}

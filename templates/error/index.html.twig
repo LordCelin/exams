@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Error{% endblock %}
+
+{% block body %}
+
+<div class="container bg-light text-center">
+    <br/>
+    <br/>
+    <p>You are not allowed to see this page.</p>
+    <br/>
+    <a href="{{ path('redirect') }}" class="btn btn-info">Go back to HomePage</a>
+    <br/>
+    <br/>
+</div>
+{% endblock %}

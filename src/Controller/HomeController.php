@@ -5,18 +5,34 @@ namespace App\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Doctrine\DBAL\Driver\Connection;
+use App\Entity\Users;
 
 class HomeController extends Controller
 {
     /**
-     * @Route("/", name="home")
+     * @Route("/home", name="home")
      */
     public function homepage(Connection $connection)
     {
+            // RETURN LOGIN PAGE IF USER IS NOT CONNECTED
+        if ($this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY'))
+        {
+            return $this->redirectToRoute('login');
+        }
         
             // PICK INFORMATION FROM CONNECTED USER        
         $currentuser = $this->getUser();
         $id = $currentuser->getUserId();
+        
+            // RESTRICT ACCESS
+        if ($currentuser->getSecretaryMember() != 0)
+        {
+            return $this->redirectToRoute('error');
+        }
+        
+            // FIND USERS TO USE THEIT NAMES IN TWIG FILE
+        $repository = $this->getDoctrine()->getRepository(Users::class);
+        $users = $repository->findAll();
         
             // MY EXAMS TO SUBMIT        
         $myexams = $connection->fetchAll("SELECT * FROM exams WHERE exam_status = 0 AND user_id = $id");
@@ -28,31 +44,63 @@ class HomeController extends Controller
             // MY SUBMISSIONS        
         $myoldsub = $connection->fetchAll("SELECT * FROM exams WHERE exam_status > 0 AND user_id = $id");
                 
-            // WHAT I VALIDATED        
-        $myvetted = $connection->fetchAll("SELECT * FROM exams WHERE exam_id IN "
-                . "(SELECT exam_id FROM validations WHERE user_id = $id AND valid_status = 1)");
-                
-            // WHAT I DIDN'T VALIDATE        
-        $mynonvetted = $connection->fetchAll("SELECT * FROM exams WHERE exam_id IN "
-                . "(SELECT exam_id FROM validations WHERE user_id = $id AND valid_status = 2)");
+            // WHAT I VALIDATED OR MODIFIED    
+        $myvets = $connection->fetchAll("SELECT * FROM exams WHERE exam_id IN "
+                . "(SELECT exam_id FROM validations WHERE user_id = $id AND valid_status > 0)");
         
-                // NUMBER OF VALIDATIONS LEFT
-        $totalvalidations = $connection->fetchAll("SELECT COUNT(*) AS nb FROM validations WHERE exam_id IN "
-                . "(SELECT exam_id FROM exams WHERE user_id = $id)");
-        $totalvetted = $connection->fetchAll("SELECT COUNT(*) AS nb FROM validations WHERE valid_status = 1 AND exam_id IN "
-                . "(SELECT exam_id FROM exams WHERE user_id = $id)");
-        $totalnonvetted = $connection->fetchAll("SELECT COUNT(*) AS nb FROM validations WHERE valid_status = 2 AND exam_id IN "
-                . "(SELECT exam_id FROM exams WHERE user_id = $id)");
+            // NUMBER OF VALIDATIONS LEFT
+        $totval = $connection->fetchAll("SELECT v.exam_id, (SELECT COUNT(*) "
+                   . "FROM validations t "
+                   . "WHERE valid_status < 3 AND t.exam_id = v.exam_id) AS nb "
+                . "FROM validations v "
+                . "JOIN exams e ON e.exam_id = v.exam_id "
+                . "WHERE e.user_id = $id "
+                . "GROUP BY v.exam_id");
+        
+            // CREATE AN ARRAY WITH key=exam_id & value=nb
+        $totalvalidations = [];
+        foreach($totval as $line){
+        $totalvalidations[$line['exam_id']] = $line['nb'];
+        }
+        
+        $totvet = $connection->fetchAll("SELECT v.exam_id, (SELECT COUNT(*) "
+                   . "FROM validations t "
+                   . "WHERE valid_status = 1 AND t.exam_id = v.exam_id) AS nb "
+                . "FROM validations v "
+                . "JOIN exams e ON e.exam_id = v.exam_id "
+                . "WHERE e.user_id = $id "
+                . "GROUP BY v.exam_id");
+        
+            // CREATE AN ARRAY WITH key=exam_id & value=nb
+        $totalvetted = [];
+        foreach($totvet as $line){
+        $totalvetted[$line['exam_id']] = $line['nb'];
+        }
+        
+        $totnonvet = $connection->fetchAll("SELECT v.exam_id, (SELECT COUNT(*) "
+                   . "FROM validations t "
+                   . "WHERE valid_status = 2 AND t.exam_id = v.exam_id) AS nb "
+                . "FROM validations v "
+                . "JOIN exams e ON e.exam_id = v.exam_id "
+                . "WHERE e.user_id = $id "
+                . "GROUP BY v.exam_id");
+        
+            // CREATE AN ARRAY WITH key=exam_id & value=nb
+        $totalnonvetted = [];
+        foreach($totnonvet as $line){
+        $totalnonvetted[$line['exam_id']] = $line['nb'];
+        }
         
         return $this->render('home/index.html.twig', [
             'myexams' => $myexams,
             'examstovet' => $examstovet,
             'myoldsub' => $myoldsub,
-            'myvetted' => $myvetted,
-            'mynonvetted' => $mynonvetted,
+            'myvets' => $myvets,
             'totalvalidations' => $totalvalidations,
             'totalvetted' => $totalvetted,
             'totalnonvetted' => $totalnonvetted,
+            'currentuser' => $currentuser,
+            'users' => $users,
         ]);
     }
 }

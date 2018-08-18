@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit a department{% endblock %}
+
+{% block nav %}    
+<nav class="navbar navbar-light" style="background-color: #E0E0E0;">
+    <p>Hi Admin</p> <a href="{{ path('logout') }}" class="btn btn-dark">Logout</a>
+</nav>
+{% endblock %}
+
+{% block body %}
+
+<div class="container bg-light">
+    <br/>
+    <h3 class="p-2 mb-2 bg-info text-center">Edit a department</h3>
+    <div class="container">
+        <div class="text-right">
+            <a href="{{ path('admin_home') }}" class="btn btn-dark">Back to Home</a>
+        </div>
+    <p>You can modify the name of this department.</p>
+    <br/>
+    
+    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+        {{ form_widget(form) }}
+    {{ form_end(form) }}
+</div>
+{% endblock %}

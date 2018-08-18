@@ -21,10 +21,22 @@ class AskingTaskController extends Controller
     public function askingExam(Request $request)
     {
         
+            // RETURN LOGIN PAGE IF USER IS NOT CONNECTED
+        if ($this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY'))
+        {
+            return $this->redirectToRoute('login');
+        }
+        
             // PICK INFORMATION FROM CONNECTED USER        
         $currentuser = $this->getUser();
         $id = $currentuser->getUserId();
-        $dpt = $currentuser->getDptId();        
+        $dpt = $currentuser->getDptId();
+        
+            // RESTRICT ACESS
+        if($currentuser->getSecretaryMember() != 1 && $currentuser->getHod() != 1)
+        {
+            return $this->redirectToRoute('error');
+        }
         
             // PICK ALL THE TEACHERS IN THE DEPARTMENT OF THE CONNECTED SECRETARY MEMBER
         $repository = $this->getDoctrine()->getRepository(Users::class);
@@ -36,16 +48,12 @@ class AskingTaskController extends Controller
         $teachers[$line->getName().' '.$line->getFirstName()] = $line->getUserId();
         }
                 
-            // CREATE NEW EXAM : PUT NEW INFORMATIONS, SOME RANDOM IN THE NOT NULL AREAS        
+            // CREATE NEW EXAM : PUT NEW INFORMATIONS AND DATES FOR THE FORM        
         $exam = new Exams();
         $exam->setSecrUserId($id);
         $exam->setExternDl(new \DateTime('tomorrow'));
         $exam->setDate(new \DateTime('now'));
-        $exam->setTitle('Title');
         $exam->setInternDl(new \DateTime('tomorrow'));
-        $exam->setDateOfSubmit(new \DateTime('now'));
-        $exam->setFileName('file');
-        $exam->setFilePath('path');
 
             // FORM        
         $form = $this->createFormBuilder($exam)
@@ -66,7 +74,7 @@ class AskingTaskController extends Controller
             $entityManager->persist($task);
             $entityManager->flush();
 
-            return $this->redirectToRoute('asking_task');
+            return $this->redirectToRoute('redirect');
         
         }
 

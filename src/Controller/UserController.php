@@ -5,6 +5,7 @@ namespace App\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use App\Entity\Users;
+use App\Controller\MailController;
 use App\Entity\Departments;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -13,11 +14,14 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class UserController extends Controller
 {
     /**
      * @Route("/user", name="user")
+     * 
+     * @Security("has_role('ROLE_ADMIN')")
      */
     public function addNewUser(Request $request, UserPasswordEncoderInterface $passwordEncoder)
     {
@@ -63,9 +67,13 @@ class UserController extends Controller
 
         // SAVE DATA IN DOCTRINE DB
         
-         $entityManager = $this->getDoctrine()->getManager();
-         $entityManager->persist($user);
-         $entityManager->flush(); 
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($user);
+        $entityManager->flush();
+         
+//            // EMAIL NOTIFICATION
+//        $mail = new MailController();
+//        $mail->mailNewUser($user);
 
         return $this->redirectToRoute('user');
 

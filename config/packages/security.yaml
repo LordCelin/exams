@@ -2,14 +2,18 @@ security:
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     
     encoders:
-#        Symfony\Component\Security\Core\User\User:
-#            algorithm: bcrypt
+        Symfony\Component\Security\Core\User\User:
+            algorithm: bcrypt
 #            cost: 12
             
         App\Entity\Users: bcrypt
     
     providers:
 #        in_memory: { memory: ~ }
+
+        chain_provider:
+            chain:
+                providers: [our_db_provider, in_memory]
         
         our_db_provider:
             entity:
@@ -17,6 +21,13 @@ security:
                 property: username
                 # if you're using multiple entity managers
                 # manager_name: customer
+                
+        in_memory:
+            memory:
+                users:
+                    admin:
+                        password: $2y$13$jV74eRXUbu./rSXD6CZZN.weTCeqAsk30MYbPeA.qeZjjvjbyw2e6
+                        roles: 'ROLE_ADMIN'
                    
                 
     firewalls:
@@ -29,22 +40,22 @@ security:
             form_login:
                 login_path: login
                 check_path: login
-#                default_target_path: home
+#                default_target_path: redirect
                 
             pattern:    ^/
             http_basic: ~
-            provider: our_db_provider
+            provider: chain_provider
 
             logout:
                 path:   /logout
                 target: /login
                 
-        secured_area:
+#        secured_area:
             # ...
 
             # activate different ways to authenticate
 
-            http_basic: true
+#            http_basic: true
             # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
 
 #            form_login: true

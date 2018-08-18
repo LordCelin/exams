@@ -13,10 +13,15 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 class ModificationController extends Controller
 {
     /**
-     * @Route("/modification", name="modification")
+     * @Route("/modification/{valid_id}", name="modification", requirements={"valid_id"="\d+"})
      */
     public function modify($valid_id, Request $request, Connection $connection)
     {
+            // RETURN LOGIN PAGE IF USER IS NOT CONNECTED
+        if ($this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY'))
+        {
+            return $this->redirectToRoute('login');
+        }
         
             // PICK INFORMATION FROM CONNECTED USER        
         $currentuser = $this->getUser();
@@ -26,6 +31,13 @@ class ModificationController extends Controller
             // MODIFY THE RIGHT EXAM        
         $repository = $this->getDoctrine()->getRepository(Validations::class);
         $myvalid = $repository->findOneBy(['validId' => $valid_id]);
+        $myexamid = $myvalid->getExamId();
+        
+            // RESTRICT ACCESS
+        if ($myvalid->getUserId() != $id)
+        {
+            return $this->redirectToRoute('error');
+        }
         
             // FORM                
         $form = $this->createFormBuilder($myvalid)
@@ -42,7 +54,7 @@ class ModificationController extends Controller
             $myvalid = $form->getData();
             
                 // INCREMENT VALID STATUS            
-            $myvalid->setExamStatus('2');
+            $myvalid->setValidStatus('2');
 
                 // SAVE DATA IN DOCTRINE DB        
             $entityManager = $this->getDoctrine()->getManager();
@@ -53,10 +65,8 @@ class ModificationController extends Controller
             
             /** @var Symfony\Component\HttpFoundation\File\UploadedFile $file */
             $file = $myvalid->getFile();
-            
-            $examtitle = $connection->fetchAll("SELECT exam_title FROM exams WHERE exam_id IN (SELECT exam_id FROM validations WHEN valid_id = $valid_id)");
-            
-            $fileName = $examtitle.$valid_id.'.'.$file->guessExtension();
+                        
+            $fileName = $myexamid.'_'.$valid_id.'.'.$file->guessExtension();
 
             // moves the file to the directory where brochures are stored
             $file->move(
@@ -74,7 +84,7 @@ class ModificationController extends Controller
 
     }
         return $this->render('modification/index.html.twig', [
-            'controller_name' => 'ModificationController',
+            'form' => $form->createView(),
         ]);
     }
 }

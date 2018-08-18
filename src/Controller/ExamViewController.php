@@ -17,6 +17,12 @@ class ExamViewController extends Controller
     public function showExams($exam_id, Connection $connection)
     {
         
+            // RETURN LOGIN PAGE IF USER IS NOT CONNECTED
+        if ($this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY'))
+        {
+            return $this->redirectToRoute('login');
+        }
+        
             // PICK INFORMATION FROM CONNECTED USER        
         $currentuser = $this->getUser();
         $id = $currentuser->getUserId();
@@ -28,9 +34,13 @@ class ExamViewController extends Controller
         
             // PICK THE RIGHT VALIDATION ID
         $repository2 = $this->getDoctrine()->getRepository(Validations::class);
-        $valid_id_line = $repository2->findOneBy(['examId' => $exam_id, 'userId' => $id]);
-        $valid_id = $valid_id_line->getValidId();
-        //$valid_id = $connection->fetchAll("SELECT valid_id FROM validations WHERE exam_id = $exam_id AND user_id = $id");
+        $myvalid = $repository2->findOneBy(['examId' => $exam_id, 'userId' => $id]);
+        
+            // RESTRICT ACCESS
+        if ($myexam->getUserId() != $id && $myvalid->getUserId() != $id)
+        {
+            return $this->redirectToRoute('error');
+        }
         
             // PICK INFORMATION FROM THE EXAM SUBMITTER
         $repository3 = $this->getDoctrine()->getRepository(Users::class);
@@ -39,14 +49,21 @@ class ExamViewController extends Controller
         $ownerdpt = $connection->fetchAll("SELECT dpt_name FROM departments WHERE dpt_id = $ownerdptid");
         
             // ALL VALIDATIONS OF THIS EXAM        
-        $allvalidations = $connection->fetchAll("SELECT * FROM validations WHERE exam_id = $exam_id AND valid_status > 0");
+        $validated = $repository2->findBy(['examId' => $exam_id, 'validStatus' => 1]);
+        $modified = $repository2->findBy(['examId' => $exam_id, 'validStatus' => 2]);
+        
+            // USERS FOR NAME IN TWIG FILE       
+        $users = $repository3->findAll();
         
         return $this->render('exam_view/index.html.twig', [
             'myexam' => $myexam,
-            'allvalidations' => $allvalidations,
+            'validated' => $validated,
+            'modified' => $modified,
             'owner' => $owner,
             'ownerdpt' => $ownerdpt,
-            'valid_id' => $valid_id
+            'myvalid' => $myvalid,
+            'id' => $id,
+            'users' => $users
         ]);
     }
 }
