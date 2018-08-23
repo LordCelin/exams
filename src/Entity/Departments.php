@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Entity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -23,6 +24,8 @@ class Departments
 
     /**
      * @var string
+     * 
+     * @Assert\NotBlank()
      *
      * @ORM\Column(name="dpt_name", type="string", length=32, nullable=false)
      */

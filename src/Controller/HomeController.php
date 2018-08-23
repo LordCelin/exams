@@ -6,20 +6,17 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Doctrine\DBAL\Driver\Connection;
 use App\Entity\Users;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class HomeController extends Controller
 {
     /**
      * @Route("/home", name="home")
+     * 
+     * @Security("has_role('ROLE_USER')")
      */
     public function homepage(Connection $connection)
     {
-            // RETURN LOGIN PAGE IF USER IS NOT CONNECTED
-        if ($this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY'))
-        {
-            return $this->redirectToRoute('login');
-        }
-        
             // PICK INFORMATION FROM CONNECTED USER        
         $currentuser = $this->getUser();
         $id = $currentuser->getUserId();
@@ -44,11 +41,12 @@ class HomeController extends Controller
             // MY SUBMISSIONS        
         $myoldsub = $connection->fetchAll("SELECT * FROM exams WHERE exam_status > 0 AND user_id = $id");
                 
-            // WHAT I VALIDATED OR MODIFIED    
+            // WHAT I ALREADY VALIDATED OR MODIFIED
         $myvets = $connection->fetchAll("SELECT * FROM exams WHERE exam_id IN "
                 . "(SELECT exam_id FROM validations WHERE user_id = $id AND valid_status > 0)");
         
             // NUMBER OF VALIDATIONS LEFT
+            // TOTAL OF VALIDATIONS LINE
         $totval = $connection->fetchAll("SELECT v.exam_id, (SELECT COUNT(*) "
                    . "FROM validations t "
                    . "WHERE valid_status < 3 AND t.exam_id = v.exam_id) AS nb "
@@ -63,6 +61,7 @@ class HomeController extends Controller
         $totalvalidations[$line['exam_id']] = $line['nb'];
         }
         
+            // TOTAL OF APPROVES
         $totvet = $connection->fetchAll("SELECT v.exam_id, (SELECT COUNT(*) "
                    . "FROM validations t "
                    . "WHERE valid_status = 1 AND t.exam_id = v.exam_id) AS nb "
@@ -77,6 +76,7 @@ class HomeController extends Controller
         $totalvetted[$line['exam_id']] = $line['nb'];
         }
         
+            // TOTAL OF NON APPROVED
         $totnonvet = $connection->fetchAll("SELECT v.exam_id, (SELECT COUNT(*) "
                    . "FROM validations t "
                    . "WHERE valid_status = 2 AND t.exam_id = v.exam_id) AS nb "

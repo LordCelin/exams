@@ -7,10 +7,18 @@
 <div class="container bg-light">
     <br/>
     <h1 class="p-2 mb-2 bg-info text-center">Submit an Exam</h1>
+    
+    <div class="text-right">
+            <a href="{{ path('redirect') }}" class="btn btn-dark">Back to Home</a>
+    </div>
     <br/>
+    <p>Choose a file format that can be easily read by your colleagues.</p>
+    <p class='text-danger'>File and title are mandatory.</p>
+    <div class="container">
     {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
         {{ form_widget(form) }}
         {{ form_row(form.file) }}
     {{ form_end(form) }}
+    </div>
 </div>
 {% endblock %}

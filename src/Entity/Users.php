@@ -27,20 +27,14 @@ class Users implements AdvancedUserInterface, \Serializable
 
     /**
      * @var string
+     * 
+     * @Assert\NotBlank()
      *
-     * @ORM\Column(name="mail", type="string", length=254, nullable=false)
+     * @ORM\Column(name="mail", type="string", length=254, nullable=false, unique=true)
      */
     private $mail;
     
     /**
-     * @var string
-     *
-     * @ORM\Column(name="username", type="string", length=32, nullable=false, unique=true)
-     */
-    private $username;
-    
-    /**
-     * @Assert\NotBlank()
      * @Assert\Length(max=4096)
      */
     private $plainPassword;
@@ -54,6 +48,8 @@ class Users implements AdvancedUserInterface, \Serializable
 
     /**
      * @var string
+     * 
+     * @Assert\NotBlank()
      *
      * @ORM\Column(name="name", type="string", length=32, nullable=false)
      */
@@ -61,6 +57,8 @@ class Users implements AdvancedUserInterface, \Serializable
 
     /**
      * @var string
+     * 
+     * @Assert\NotBlank()
      *
      * @ORM\Column(name="firstname", type="string", length=32, nullable=false)
      */
@@ -123,7 +121,7 @@ class Users implements AdvancedUserInterface, \Serializable
     {
         return serialize(array(
             $this->userId,
-            $this->username,
+            $this->mail,
             $this->password,
             $this->isActive,
             // see section on salt below
@@ -136,7 +134,7 @@ class Users implements AdvancedUserInterface, \Serializable
     {
         list (
             $this->userId,
-            $this->username,
+            $this->mail,
             $this->password,
             $this->isActive,
             // see section on salt below
@@ -174,6 +172,11 @@ class Users implements AdvancedUserInterface, \Serializable
     {
         return $this->userId;
     }
+    
+    public function getUsername(): ?string
+    {
+        return $this->mail;
+    }
 
     public function getMail(): ?string
     {
@@ -186,18 +189,7 @@ class Users implements AdvancedUserInterface, \Serializable
 
         return $this;
     }
-    
-    public function getUsername() : ?string
-    {
-        return $this->username;
-    }
-    
-    public function setUsername(string $username): self
-    {
-        $this->username = $username;
 
-        return $this;
-    }
     public function getSalt()
     {
         // you *may* need a real salt depending on your encoder

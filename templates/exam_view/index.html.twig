@@ -14,26 +14,46 @@
     
     <h3>Original file</h3>
     
-    <a href="/uploads/files/{{ myexam.filename }}">See</a>
-    
-    {% if id != owner.userId %}
-        <a href="{{ path('validation', {'valid_id': myvalid.valiId }) }}" class="btn btn-info">Validate this exam</a> | <a href="{{ path('modification', {'valid_id': valid_id.valid_id }) }}" class="btn btn-warning">Propose modifications</a>
+    <a href="/uploads/files/{{ myexam.filename }}" class="btn btn-info">See</a>
+    <br/>
+    <br/>
+    {% if id == owner.userId %}
+        {% if myexam.examStatus < 3 %}
+            <a href="{{ path('new_upload', {'exam_id': myexam.examId }) }}" class="btn btn-danger">Upload a new file</a>
+            <p class="text-danger">The original file will be erased, do this action only if there are mistakes in it.</p>
+            
+        {% endif %}
     {% endif %}
     
-    <h3>See other versions from validators</h3>
+    {% if id != owner.userId %}
+        <h4>Action</h4>
+        {% if myvalid.validStatus == 1 %}
+            <p class="text-danger">You have already validate this exam, you can change your vote but your last proposition will be erased, take care to don't forget anything</p>
+        {% endif %}
+        {% if myvalid.validStatus == 2 %}
+            <p class="text-danger">You have already propose some modifications for this exam, you can change your vote but your last proposition will be erased, take care to don't forget anything</p>
+        {% endif %}
+        {% if myvalid.validStatus < 3 %}
+            <a href="{{ path('validation', {'valid_id': myvalid.validId }) }}" class="btn btn-success">Validate this exam</a> <a href="{{ path('modification', {'valid_id': myvalid.validId }) }}" class="btn btn-warning">Propose modifications</a>
+            <br/>
+            <br/>
+        {% endif %}
+    {% endif %}
+    
+    <h3>See other versions from validators who have been proposed some modifications</h3>
     
     <table>
         {% for valid in modified %}
             <tr>
                 <td>
                     {% for user in users %}
-                        {% if user.getUserId == valid.user_id %}
+                        {% if user.getUserId == valid.userId %}
                             {{user.firstname}} {{user.name}}
                         {% endif %}
                     {% endfor %}
                 </td>
                 <td>
-                    <a href="/uploads/files/{{ valid.filename }}">See</a>
+                    <a href="/uploads/files/{{ valid.filename }}" class="btn btn-info">See</a>
                 </td>
                 <td>
                     {{valid.comment}}
@@ -49,7 +69,7 @@
             <tr>
                 <td>
                     {% for user in users %}
-                        {% if user.getUserId == valid.user_id %}
+                        {% if user.getUserId == valid.userId %}
                             {{user.firstname}} {{user.name}}
                         {% endif %}
                     {% endfor %}
@@ -60,5 +80,22 @@
             </tr>
         {% endfor %}
     </table>
+    
+    <br/>
+    <h5>Not checked yet by</h5>
+    <table>
+        {% for valid in notdone %}
+            <tr>
+                <td>
+                    {% for user in users %}
+                        {% if user.getUserId == valid.userId %}
+                            {{user.firstname}} {{user.name}}
+                        {% endif %}
+                    {% endfor %}
+                </td>                
+            </tr>
+        {% endfor %}
+    </table>
+    <br/>
 </div>
 {% endblock %}

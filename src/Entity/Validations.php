@@ -36,6 +36,8 @@ class Validations
      * @ORM\Column(name="user_id", type="integer", nullable=false)
      */
     private $userId;
+    
+    // VALID_STATUS: 0 = NOT DONE, 1 = VALIDATED, 2 = MODIFIED, 3 = ARCHIVED
 
     /**
      * @var int
@@ -57,13 +59,6 @@ class Validations
      * @ORM\Column(name="file_name", type="string", length=64, nullable=true)
      */
     private $fileName;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="file_path", type="string", length=64, nullable=true)
-     */
-    private $filePath;
     
      /**
      * @Assert\File(maxSize="6000000")
@@ -151,18 +146,6 @@ class Validations
     public function setFileName(string $fileName): self
     {
         $this->fileName = $fileName;
-
-        return $this;
-    }
-
-    public function getFilePath(): ?string
-    {
-        return $this->filePath;
-    }
-
-    public function setFilePath(string $filePath): self
-    {
-        $this->filePath = $filePath;
 
         return $this;
     }

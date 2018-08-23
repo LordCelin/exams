@@ -18,7 +18,7 @@ security:
         our_db_provider:
             entity:
                 class: App\Entity\Users
-                property: username
+                property: mail
                 # if you're using multiple entity managers
                 # manager_name: customer
                 

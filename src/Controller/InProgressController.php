@@ -6,23 +6,19 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Doctrine\DBAL\Driver\Connection;
 use App\Entity\Users;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class InProgressController extends Controller
 {
     /**
      * @Route("/in/progress", name="in_progress")
+     * 
+     * @Security("has_role('ROLE_USER')")
      */
     public function index(Connection $connection)
     {
-            // RETURN LOGIN PAGE IF USER IS NOT CONNECTED
-        if ($this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY'))
-        {
-            return $this->redirectToRoute('login');
-        }
-        
             // PICK INFORMATION FROM CONNECTED USER        
         $currentuser = $this->getUser();
-        $id = $currentuser->getUserId();
         $dpt = $currentuser->getDptId();
         
             // RESTRICT ACESS
@@ -31,7 +27,7 @@ class InProgressController extends Controller
             return $this->redirectToRoute('error');
         }
         
-            // FIND USERS TO USE THEIT NAMES IN TWIG FILE
+            // FIND USERS TO USE THEIR NAMES IN TWIG FILE
         $repository = $this->getDoctrine()->getRepository(Users::class);
         $users = $repository->findAll();
                 

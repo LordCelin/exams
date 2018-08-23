@@ -11,31 +11,33 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Doctrine\DBAL\Driver\Connection;
 use App\Utils\Tasks;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class ValidationController extends Controller
 {
     /**
      * @Route("/validation/{valid_id}", name="validation", requirements={"valid_id"="\d+"})
+     * 
+     * @Security("has_role('ROLE_USER')")
      */
     public function validExam($valid_id, Request $request, Connection $connection)
     {
-            // RETURN LOGIN PAGE IF USER IS NOT CONNECTED
-        if ($this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY'))
-        {
-            return $this->redirectToRoute('login');
-        }
-        
             // PICK INFORMATION FROM CONNECTED USER        
         $currentuser = $this->getUser();
         $id = $currentuser->getUserId();
         $dpt = $currentuser->getDptId();
         
-            // MODIFY THE RIGHT EXAM        
+            // MODIFY THE RIGHT VALIDATION        
         $repository = $this->getDoctrine()->getRepository(Validations::class);
         $myvalid = $repository->findOneBy(['validId' => $valid_id]);
+        
+            // PICK THE RIGHT EXAM
+        $repository2 = $this->getDoctrine()->getRepository(Exams::class);
+        $myexam = $repository2->findOneBy(['examId' => $myvalid->getExamId()]);
+        $exam_id = $myexam->getExamId();
                 
-            // RESTRICT ACCESS
-        if ($myvalid->getUserId() != $id)
+            // DENY ACCESS TO USERS NOT CONCERNED OR IF TASKS ARE OBSOLETE
+        if ($myvalid->getUserId() != $id || $myvalid->getValidStatus() > 2)
         {
             return $this->redirectToRoute('error');
         }
@@ -55,37 +57,37 @@ class ValidationController extends Controller
             
                 // INCREMENT VALID STATUS            
             $myvalid->setValidStatus('1');
-
+            
                 // SAVE DATA IN DOCTRINE DB        
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($myvalid);
-            $entityManager->flush();
             
                 // FOR AUTO VALIDATION IF EVERYBODY VET THE EXAM
                 // NUMBER OF VETTED AND NUMBER OF TOTAL VALIDATIONS
-            $totalvalidations = $connection->fetchAll("SELECT COUNT(*) AS nb FROM validations WHERE valid_status < 3 AND exam_id IN "
-                    . "(SELECT exam_id FROM exams WHERE user_id = $id)");
-            $totalvetted = $connection->fetchAll("SELECT COUNT(*) AS nb FROM validations WHERE valid_status = 1 AND exam_id IN "
-                    . "(SELECT exam_id FROM exams WHERE user_id = $id)");
+            $totalvalidations = $connection->fetchAll("SELECT COUNT(*) AS nb FROM validations WHERE valid_status < 3 AND exam_id = $exam_id");
+            $totalvetted = $connection->fetchAll("SELECT COUNT(*) AS nb FROM validations WHERE valid_status = 1 AND exam_id = $exam_id");
                 // STATUS VALIDATION
-            if ($totalvalidations === $totalvetted)
+            if ($totalvalidations[0]['nb'] === $totalvetted[0]['nb'])
             {
                     // PICK ALL VALIDATIONS
-                $validations = $repository->findBy(['examId' => $myvalid->getExamId()]);
-                    // PICK THE RIGHT EXAM
-                $repository2 = $this->getRepository(Exams::class);
-                $myexam = $repository2->findOneBy(['examId' => $myvalid->getExamId()]);
-                    // SET STATUS
-                $validations->setValidStatus('3');
+                $validations = $repository->findBy(['examId' => $exam_id]);
+                
+                    // SET STATUS TO ARCHIVED
+                foreach($validations as $val)
+                {
+                    $val->setValidStatus('3');
+                }
                 $myexam->setExamStatus($myexam->getExamStatus()+1);
                 
                     // CREATE NEW VALIDATIONS LINES IN DB AND SEND MAIL NOTIFICATIONS
                 if($myexam->getExamStatus() === 2)
                 {
-                    $exam_id = $myexam->getExamId();
                     Tasks::newValidations($connection, $exam_id, 2, $id, $dpt, $entityManager);
                 }
             }
+
+                // SAVE DATA IN DOCTRINE DB
+            $entityManager->flush();
 
             return $this->redirectToRoute('home');
 

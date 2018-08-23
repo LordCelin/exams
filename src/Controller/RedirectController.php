@@ -19,23 +19,28 @@ class RedirectController extends Controller
             return $this->redirectToRoute('login');
         }
         
+            // RETURN ADMIN_HOME IF USER IS THE ADMIN
         else if ($this->isGranted('ROLE_ADMIN'))
         {
         return $this->redirectToRoute('admin_home');
         }
         
-        else{
+        else
+        {
                 // ELSE, PICK INFORMATION FROM CONNECTED USER AND REDIRECT HIM       
             $currentuser = $this->getUser();
                 // IF HE'S NOT A SECRECTARY MEMBER, REDIRECT TO HOME
             if ($currentuser->getSecretaryMember() == 0)
-            {return $this->redirectToRoute('home');}
+            {
+                return $this->redirectToRoute('home');                
+            }
                 // ELSE, REDIRECT TO SECRETARY PAGE
-            else {return $this->redirectToRoute('secretary_home');}
+            else
+            {
+                return $this->redirectToRoute('secretary_home');                
+            }
         }
         
-        return $this->render('redirect/index.html.twig', [
-            'controller_name' => 'RedirectController',
-        ]);
+        return $this->render('redirect/index.html.twig');
     }
 }

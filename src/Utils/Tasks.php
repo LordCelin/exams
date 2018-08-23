@@ -16,7 +16,6 @@ class Tasks
         if($exam_status == 2)
         {
                 // CREATE A LINE IN VALIDATION FOR EACH TEACHER OUT OF THE DEPARTMENT
-                // PICK TEACHERS EXEPT
             $users = $connection->fetchAll("SELECT * FROM users WHERE dpt_id <> $dpt AND secretary_member = 0");
         }
         

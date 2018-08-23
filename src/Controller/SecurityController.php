@@ -14,6 +14,13 @@ class SecurityController extends Controller
      */
     public function login(Request $request, AuthenticationUtils $authenticationUtils)
 {
+        // DENY ACCESS TO CONNECTED USER
+    if ($this->isGranted('IS_AUTHENTICATED_FULLY'))
+    {
+        return $this->redirectToRoute('redirect');
+    }
+    
+        // SECURITY CONTROLLER BY SYMFONY DOC
     // get the login error if there is one
     $error = $authenticationUtils->getLastAuthenticationError();
 

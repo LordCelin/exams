@@ -11,22 +11,18 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class AskingTaskController extends Controller
 {
     /**
      * @Route("/asking/task", name="asking_task")
+     * 
+     * @Security("has_role('ROLE_USER')")
      */
     
     public function askingExam(Request $request)
-    {
-        
-            // RETURN LOGIN PAGE IF USER IS NOT CONNECTED
-        if ($this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY'))
-        {
-            return $this->redirectToRoute('login');
-        }
-        
+    {        
             // PICK INFORMATION FROM CONNECTED USER        
         $currentuser = $this->getUser();
         $id = $currentuser->getUserId();
@@ -47,19 +43,19 @@ class AskingTaskController extends Controller
         foreach($dptteachers as $line){
         $teachers[$line->getName().' '.$line->getFirstName()] = $line->getUserId();
         }
+            // SORT BY ALPHABET
+        ksort($teachers);
                 
             // CREATE NEW EXAM : PUT NEW INFORMATIONS AND DATES FOR THE FORM        
         $exam = new Exams();
         $exam->setSecrUserId($id);
-        $exam->setExternDl(new \DateTime('tomorrow'));
+        $exam->setDeadline(new \DateTime('tomorrow'));
         $exam->setDate(new \DateTime('now'));
-        $exam->setInternDl(new \DateTime('tomorrow'));
 
             // FORM        
         $form = $this->createFormBuilder($exam)
         ->add('description', TextareaType::class, array('label' => 'Add a description for this exam: '))
-        ->add('interndl', DateType::class, array('label' => 'Choose a deadline for intern teachers (2 weeks before deadline for example): '))
-        ->add('externdl', DateType::class, array('label' => 'Choose a deadline: '))
+        ->add('deadline', DateType::class, array('label' => 'Choose a deadline: '))
         ->add('userid', ChoiceType::class, array('choices' => $teachers, 'label' => 'Choose submitter: '))
         ->add('save', SubmitType::class, array('label' => 'SUBMIT'))
         ->getForm();

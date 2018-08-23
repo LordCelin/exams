@@ -15,8 +15,6 @@ class AdminHomeController extends Controller
      */
     public function adminChoice()
     {
-        return $this->render('admin_home/index.html.twig', [
-            'controller_name' => 'AdminHomeController',
-        ]);
+        return $this->render('admin_home/index.html.twig');
     }
 }

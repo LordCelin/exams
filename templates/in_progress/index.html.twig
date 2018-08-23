@@ -20,7 +20,6 @@
                 <th>Asker</th>
                 <th>Description</th>
                 <th>Submitter</th>
-                <th>Internal Deadline (y-m-d)</th>
                 <th>Deadline (y-m-d)</th>
                 <th></th>
             <tr>
@@ -43,8 +42,7 @@
                         {% endif %}
                     {% endfor %}
                 </td>
-                <td>{{exam.intern_dl}}</td>
-                <td>{{exam.extern_dl}}</td>
+                <td>{{exam.deadline}}</td>
                 <td><a href="{{ path('delete_exam', {'exam_id': exam.exam_id }) }}" onclick="return confirm('Delete this exam?')" class="btn btn-danger">Delete</a></td>
             </tr>
         {% endfor %}
@@ -64,7 +62,6 @@
                 <th>Submission (y-m-d)</th>
                 <th>Submitter</th>
                 <th>Title</th>
-                <th>Internal Deadline (y-m-d)</th>
                 <th>Deadline (y-m-d)</th>
                 <th></th>
                 <th></th>
@@ -89,8 +86,7 @@
                     {% endfor %}
                 </td>
                 <td>{{exam.title}}</td>
-                <td>{{exam.intern_dl}}</td>
-                <td>{{exam.extern_dl}}</td>
+                <td>{{exam.deadline}}</td>
                 <td><a href="{{ path('exam_view', {'exam_id': exam.exam_id }) }}" class="btn btn-info">See</a></td>
                 <td><a href="{{ path('delete_exam', {'exam_id': exam.exam_id }) }}" onclick="return confirm('Delete this exam?')" class="btn btn-danger">Delete</a></td>
             </tr>
@@ -110,7 +106,6 @@
                 <th>Submission (y-m-d)</th>
                 <th>Submitter</th>
                 <th>Title</th>
-                <th>Internal Deadline (y-m-d)</th>
                 <th>Deadline (y-m-d)</th>
                 <th></th>
                 <th></th>
@@ -135,8 +130,7 @@
                     {% endfor %}
                 </td>
                 <td>{{exam.title}}</td>
-                <td>{{exam.intern_dl}}</td>
-                <td>{{exam.extern_dl}}</td>
+                <td>{{exam.deadline}}</td>
                 <td><a href="{{ path('exam_view', {'exam_id': exam.exam_id }) }}" class="btn btn-info">See</a></td>
                 <td><a href="{{ path('delete_exam', {'exam_id': exam.exam_id }) }}" onclick="return confirm('Delete this exam?') " class="btn btn-danger">Delete</a></td>
             </tr>
@@ -155,7 +149,6 @@
                 <th>Submission (y-m-d)</th>
                 <th>Submitter</th>
                 <th>Title</th>
-                <th>Internal Deadline (y-m-d)</th>
                 <th>Deadline (y-m-d)</th>
                 <th></th>
                 <th></th>
@@ -180,8 +173,7 @@
                     {% endfor %}
                 </td>
                 <td>{{exam.title}}</td>
-                <td>{{exam.intern_dl}}</td>
-                <td>{{exam.extern_dl}}</td>
+                <td>{{exam.deadline}}</td>
                 <td><a href="{{ path('exam_view', {'exam_id': exam.exam_id }) }}" class="btn btn-info">See</a></td>
                 <td><a href="{{ path('delete_exam', {'exam_id': exam.exam_id }) }}" onclick="return confirm('Delete this exam?')" class="btn btn-danger">Delete</a></td>
             </tr>

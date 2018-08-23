@@ -4,8 +4,8 @@ namespace App\Controller;
 
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use App\Utils\Mail;
 use App\Entity\Users;
-use App\Controller\MailController;
 use App\Entity\Departments;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -25,26 +25,31 @@ class UserController extends Controller
      */
     public function addNewUser(Request $request, UserPasswordEncoderInterface $passwordEncoder)
     {
-
+            // FIND ALL USERS
         $repository = $this->getDoctrine()->getRepository(Users::class);
         $myusers = $repository->findAll();
         
+            // FIND ALL DEPARTMENTS
         $repository2 = $this->getDoctrine()->getRepository(Departments::class);
         $mydepartments = $repository2->findAll();
         
+            // CREATE AN ARRAY WITH DPT_NAMES AS KEY AND DPT_ID AS VALUE FOR THE FORM
         $dpts = [];
         
         foreach($mydepartments as $line){
             $dpts[$line->getDptName()] = $line->getDptId();
         }
         
+            // CREATE NEW USER WITH AUTO PASSORD
         $newuser = new Users();
         
         $newuser->setPlainPassword('123');
         
+            // ENCODE PASSWORD AND SAVE IT IN PERSISTENT PASSWORD
         $password = $passwordEncoder->encodePassword($newuser, $newuser->getPlainPassword());
         $newuser->setPassword($password);
 
+            // FORM
         $form = $this->createFormBuilder($newuser)
             ->add('firstname', TextType::class, array('label' => 'First Name: '))
             ->add('name', TextType::class, array('label' => 'Name: '))
@@ -57,23 +62,18 @@ class UserController extends Controller
         
         $form->handleRequest($request);
 
-     if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
          
-        $newuser->setUsername($newuser->getFirstName().'.'.$newuser->getName());
-         
-        // HOLDS THE SUBMITTED VALUE & UPDATE VARIABLE $form
-         
+            // HOLDS THE SUBMITTED VALUE & UPDATE VARIABLE $form         
         $user = $form->getData();
 
-        // SAVE DATA IN DOCTRINE DB
-        
+            // SAVE DATA IN DOCTRINE DB        
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($user);
         $entityManager->flush();
          
-//            // EMAIL NOTIFICATION
-//        $mail = new MailController();
-//        $mail->mailNewUser($user);
+            // EMAIL NOTIFICATION
+        Mail::mailNewUser($user);
 
         return $this->redirectToRoute('user');
 

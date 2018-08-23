@@ -47,6 +47,8 @@ class Exams
 
     /**
      * @var string
+     * 
+     * @Assert\NotBlank()
      *
      * @ORM\Column(name="description", type="text", length=65535, nullable=false)
      */
@@ -69,18 +71,13 @@ class Exams
     /**
      * @var \Date
      *
-     * @ORM\Column(name="intern_dl", type="date", nullable=true)
+     * @ORM\Column(name="deadline", type="date", nullable=false)
+     * 
+     * @Assert\Range( min = "tomorrow", minMessage= "You must choose at least tomorrow")
      */
-    private $internDl;
-
-    /**
-     * @var \Date
-     *
-     * @ORM\Column(name="extern_dl", type="date", nullable=false)
-     */
-    private $externDl;
+    private $deadline;
     
-    //EXAM_STATUS : 0 = ASKED BY SECRETARY MEMBER, 1 = SUBMITTED, 2 = VALIDATED BY INTERNS, 3 = VALIDATED BY EXTERNS
+    // EXAM_STATUS: 0 = ASKED BY SECRETARY MEMBER, 1 = SUBMITTED, 2 = VALIDATED BY INTERNS, 3 = VALIDATED BY EXTERNS
 
     /**
      * @var int
@@ -95,16 +92,9 @@ class Exams
      * @ORM\Column(name="file_name", type="string", length=64, nullable=true)
      */
     private $fileName;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="file_path", type="string", length=64, nullable=true)
-     */
-    private $filePath;
     
     /**
-     * @Assert\File(maxSize="6000000")
+     * @Assert\File(maxSize="5M")
      */
     private $file;
 
@@ -195,26 +185,14 @@ class Exams
         return $this;
     }
 
-    public function getInternDl(): ?\DateTimeInterface
+    public function getDeadline(): ?\DateTimeInterface
     {
-        return $this->internDl;
+        return $this->deadline;
     }
 
-    public function setInternDl(\DateTimeInterface $internDl): self
+    public function setDeadline(\DateTimeInterface $deadline): self
     {
-        $this->internDl = $internDl;
-
-        return $this;
-    }
-
-    public function getExternDl(): ?\DateTimeInterface
-    {
-        return $this->externDl;
-    }
-
-    public function setExternDl(\DateTimeInterface $externDl): self
-    {
-        $this->externDl = $externDl;
+        $this->deadline = $deadline;
 
         return $this;
     }
@@ -249,18 +227,6 @@ class Exams
     public function setFileName(string $fileName): self
     {
         $this->fileName = $fileName;
-
-        return $this;
-    }
-
-    public function getFilePath(): ?string
-    {
-        return $this->filePath;
-    }
-
-    public function setFilePath(string $filePath): self
-    {
-        $this->filePath = $filePath;
 
         return $this;
     }
