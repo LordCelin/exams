@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Doctrine\DBAL\Driver\Connection;
-use App\Utils\Tasks;
+//use App\Utils\Tasks;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class ValidationController extends Controller
@@ -62,29 +62,29 @@ class ValidationController extends Controller
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($myvalid);
             
-                // FOR AUTO VALIDATION IF EVERYBODY VET THE EXAM
-                // NUMBER OF VETTED AND NUMBER OF TOTAL VALIDATIONS
-            $totalvalidations = $connection->fetchAll("SELECT COUNT(*) AS nb FROM validations WHERE valid_status < 3 AND exam_id = $exam_id");
-            $totalvetted = $connection->fetchAll("SELECT COUNT(*) AS nb FROM validations WHERE valid_status = 1 AND exam_id = $exam_id");
-                // STATUS VALIDATION
-            if ($totalvalidations[0]['nb'] === $totalvetted[0]['nb'])
-            {
-                    // PICK ALL VALIDATIONS
-                $validations = $repository->findBy(['examId' => $exam_id]);
-                
-                    // SET STATUS TO ARCHIVED
-                foreach($validations as $val)
-                {
-                    $val->setValidStatus('3');
-                }
-                $myexam->setExamStatus($myexam->getExamStatus()+1);
-                
-                    // CREATE NEW VALIDATIONS LINES IN DB AND SEND MAIL NOTIFICATIONS
-                if($myexam->getExamStatus() === 2)
-                {
-                    Tasks::newValidations($connection, $exam_id, 2, $id, $dpt, $entityManager);
-                }
-            }
+//                // FOR AUTO VALIDATION IF EVERYBODY VET THE EXAM (IN PROGRESS, MAYBE NOT VERY PERTINENT, think to decomment the use up)
+//                // NUMBER OF VETTED AND NUMBER OF TOTAL VALIDATIONS
+//            $totalvalidations = $connection->fetchAll("SELECT COUNT(*) AS nb FROM validations WHERE valid_status < 3 AND exam_id = $exam_id");
+//            $totalvetted = $connection->fetchAll("SELECT COUNT(*) AS nb FROM validations WHERE valid_status = 1 AND exam_id = $exam_id");
+//                // STATUS VALIDATION
+//            if ($totalvalidations[0]['nb'] === $totalvetted[0]['nb'])
+//            {
+//                    // PICK ALL VALIDATIONS
+//                $validations = $repository->findBy(['examId' => $exam_id]);
+//                
+//                    // SET STATUS TO ARCHIVED
+//                foreach($validations as $val)
+//                {
+//                    $val->setValidStatus('3');
+//                }
+//                $myexam->setExamStatus($myexam->getExamStatus()+1);
+//                
+//                    // CREATE NEW VALIDATIONS LINES IN DB AND SEND MAIL NOTIFICATIONS
+//                if($myexam->getExamStatus() === 2)
+//                {
+//                    Tasks::newValidations($connection, $exam_id, 2, $id, $dpt, $entityManager);
+//                }
+//            }
 
                 // SAVE DATA IN DOCTRINE DB
             $entityManager->flush();

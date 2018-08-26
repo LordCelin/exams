@@ -3,43 +3,52 @@
 {% block title %}Add user{% endblock %}
 
 {% block nav %}    
-<nav class="navbar navbar-light" style="background-color: #E0E0E0;">
-    <p>Hi Admin</p> <a href="{{ path('logout') }}" class="btn btn-dark">Logout</a>
-</nav>
+    <nav class="navbar navbar-light" style="background-color: #E0E0E0;">
+        <p>Hi Admin</p> <a href="{{ path('logout') }}" class="btn btn-dark">Logout</a>
+    </nav>
 {% endblock %}
 
 {% block body %}
-<div class="container bg-light">
-    <br/>
-    <h2 class="p-2 mb-2 bg-info text-center">Add a new member</h2>
-    <div class="container">
-        <div class="text-right">
-            <a href="{{ path('admin_home') }}" class="btn btn-dark">Back to Home</a>
-        </div>
-        <div class="container">
-            {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
-                {{ form_widget(form) }}
-            {{ form_end(form) }}
-        </div>
-    </div>
-    <h3 class="p-2 mb-2 bg-info text-center">List of users</h3>
-    <div class="container">
-        <table>
-            {% for user in myusers %}
-                <tr>
-                    <td>
-                        {{user.firstname}} {{user.name}}
-                    </td>
-                    <td>
-                        <a href="{{ path('edit_user', {'user_id': user.getUserId() }) }}" class="btn btn-info">Edit</a>
-                    </td>
-                    <td>
-                        <a href="{{ path('delete_user', {'user_id': user.getUserId() }) }}" onclick="return confirm('Delete this user?')" class="btn btn-danger">Delete</a>
-                    </td>
-                </tr>
-            {% endfor %}
-        </table>
+    <div class="container bg-light">
         <br/>
+        <h2 class="p-2 mb-2 bg-info text-center">Add a new member</h2>
+            <div class="container">
+                <div class="text-right">
+                    <a href="{{ path('admin_home') }}" class="btn btn-dark">Back to Home</a>
+                </div>
+                <div class="container">
+                    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+                        {{ form_widget(form) }}
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        <h3 class="p-2 mb-2 bg-info text-center">List of users</h3>
+        <div class="container">
+            <ul>
+            {% for dpt in mydepartments %}
+                <li>
+                    <h5>{{dpt.getdptname}}</h5>
+                </li>
+                <table>
+                    {% for user in myusers %}
+                        <tr>
+                            {% if dpt.dptId == sub.dptId %}
+                            <td>
+                                {{user.firstname}} {{user.name}}
+                            </td>
+                            <td>
+                                <a href="{{ path('edit_user', {'user_id': user.getUserId() }) }}" class="btn btn-info">Edit</a>
+                            </td>
+                            <td>
+                                <a href="{{ path('delete_user', {'user_id': user.getUserId() }) }}" onclick="return confirm('Delete this user?')" class="btn btn-danger">Delete</a>
+                            </td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% endfor %}
+            </ul>
+            <br/>
+        </div>
     </div>
-</div>
 {% endblock %}

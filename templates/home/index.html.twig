@@ -26,12 +26,13 @@
                 <tr>
                     <th>Date (y-m-d)</th>
                     <th>Asker</th>
+                    <th>Subject</th>
                     <th>Description</th>
                     <th>Deadline (y-m-d)</th>
                     <th>Task</th>
                 </tr>
             </thead>
-            <tr class="table-warning">
+            <tr style="background-color:#F7F2E0">
                 <td>{{exam.date}}</td>
                 <td>
                     {% for user in users %}
@@ -40,6 +41,7 @@
                         {% endif %}
                     {% endfor %}
                 </td>
+                <td>{{exam.subject}}</td>
                 <td>{{exam.description}}</td>
                 <td>{{exam.deadline}}</td>
                 <td><a href="{{ path('submit', {'exam_id': exam.exam_id }) }}" class="btn btn-info">Submit</a></td>
@@ -56,12 +58,13 @@
                 <tr>
                     <th>Submitter</th>
                     <th>Submission (y-m-d)</th>
+                    <th>Subject</th>
                     <th>Title</th>
                     <th>Deadline (y-m-d)</th>
                     <th>Task</th>
                 </tr>
             </thead>
-            <tr class="table-warning">
+            <tr style="background-color:#F7F2E0">
                 <td>
                     {% for user in users %}
                         {% if user.getUserId == exam.user_id %}
@@ -70,6 +73,7 @@
                     {% endfor %}
                 </td>
                 <td>{{exam.date_of_submit}}</td>
+                <td>{{exam.subject}}</td>
                 <td>{{exam.title}}</td>
                 <td>{{exam.deadline}}</td>
                 <td><a href="{{ path('exam_view', {'exam_id': exam.exam_id }) }}" class="btn btn-info">Vet</a></td>
@@ -81,28 +85,44 @@
     <h2 class="p-2 mb-2 bg-info text-center">In Progress</h2>
     <div class='container'>
     <h3>My submissions</h3>
+    <p class="text-danger">Validate your own exam means going to the next step of validation</p>
     <br/>
     {% for exam in myoldsub %}    
         <table class="table table-sm table-bordered">
             <thead class="thead-dark">
                 <tr>
                     <th>Submission (y-m-d)</th>
+                    <th>Subject</th>
                     <th>Title</th>
+                    <th>Status</th>
                     <th>Total</th>
                     <th>Validated</th>
-                    <th>Not validated</th>
+                    <th>Not valid.</th>
                     <th>Deadline (y-m-d)</th>
                     <th>Task</th>
                 </tr>
             </thead>
-            <tr class="table-warning">
+            <tr style="background-color:#F7F2E0">
                 <td>{{exam.date_of_submit}}</td>
+                <td>{{exam.subject}}</td>
                 <td>{{exam.title}}</td>
+                <td>
+                    {% if exam.exam_status == 1 %}
+                        Waiting for intern. valid.
+                        {% elseif exam.exam_status == 2 %}
+                            Waiting for ext. valid.
+                            {% else %}
+                                Vetted
+                    {% endif %}
+                </td>
                 <td>{{totalvetted[exam.exam_id] + totalnonvetted[exam.exam_id]}} / {{totalvalidations[exam.exam_id]}}</td>
                 <td>{{totalvetted[exam.exam_id]}} / {{totalvalidations[exam.exam_id]}}</td>
                 <td>{{totalnonvetted[exam.exam_id]}} / {{totalvalidations[exam.exam_id]}}</td>
                 <td>{{exam.deadline}}</td>
-                <td><a href="{{ path('exam_view', {'exam_id': exam.exam_id }) }}" class="btn btn-info">See</a><a href="{{ path('owner_validation', {'exam_id': exam.exam_id }) }}" class="btn btn-info">Validate</a></td>
+                <td><a href="{{ path('exam_view', {'exam_id': exam.exam_id }) }}" class="btn btn-info">See</a>
+                    {% if exam.exam_status < 3 %}
+                        <a href="{{ path('owner_validation', {'exam_id': exam.exam_id }) }}" onclick="return confirm('Validate this exam and go to the next step?')" class="btn btn-success">Validate</a></td>
+                    {% endif %}
             </tr>
         </table>
         <br/>
@@ -116,13 +136,14 @@
                 <tr>
                     <th>Submitter</th>
                     <th>Submission (y-m-d)</th>
+                    <th>Subject</th>
                     <th>Title</th>
                     <th>Status</th>
                     <th>Deadline (y-m-d)</th>
                     <th>Task</th>
                 </tr>
             </thead>
-            <tr class="table-warning">
+            <tr style="background-color:#F7F2E0">
                 <td>
                     {% for user in users %}
                         {% if user.getUserId == exam.user_id %}
@@ -131,6 +152,7 @@
                     {% endfor %}
                 </td>
                 <td>{{exam.date_of_submit}}</td>
+                <td>{{exam.subject}}</td>
                 <td>{{exam.title}}</td>
                 <td>
                     {% if exam.exam_status == 1 %}

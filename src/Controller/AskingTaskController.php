@@ -54,7 +54,8 @@ class AskingTaskController extends Controller
 
             // FORM        
         $form = $this->createFormBuilder($exam)
-        ->add('description', TextareaType::class, array('label' => 'Add a description for this exam: '))
+        ->add('subject', TextareaType::class, array('label' => 'Add the subject of this exam: (ex: mathematics...) '))
+        ->add('description', TextareaType::class, array('label' => 'Add a description for the content of this exam: '))
         ->add('deadline', DateType::class, array('label' => 'Choose a deadline: '))
         ->add('userid', ChoiceType::class, array('choices' => $teachers, 'label' => 'Choose submitter: '))
         ->add('save', SubmitType::class, array('label' => 'SUBMIT'))

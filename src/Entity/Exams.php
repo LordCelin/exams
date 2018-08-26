@@ -44,6 +44,15 @@ class Exams
      * @ORM\Column(name="title", type="string", length=32, nullable=true)
      */
     private $title;
+    
+    /**
+     * @var string
+     * 
+     * @Assert\NotBlank()
+     *
+     * @ORM\Column(name="subject", type="string", length=64, nullable=true)
+     */
+    private $subject;
 
     /**
      * @var string
@@ -86,7 +95,7 @@ class Exams
      */
     private $examStatus = '0';
     
-     /**
+    /**
      * @var string
      *
      * @ORM\Column(name="file_name", type="string", length=64, nullable=true)
@@ -145,6 +154,18 @@ class Exams
     public function setTitle(string $title): self
     {
         $this->title = $title;
+
+        return $this;
+    }
+    
+    public function getSubject(): ?string
+    {
+        return $this->subject;
+    }
+
+    public function setSubject(string $subject): self
+    {
+        $this->subject = $subject;
 
         return $this;
     }

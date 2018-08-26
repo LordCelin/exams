@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>read me</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div style="font-family:sans-serif">
+        <h1 style="color:#641E16">Exam management tool</h1>
+        
+        <p>by Céline Amorosi - 24th of august 2018</p>
+        <p>contact : celine.amorosi @ gmail.com</p>
+        <p>This project is made with symfony 4.1, PHP 7.2, Bootstrap 4, HTML 5</p>
+        <br/>
+        
+        <h4 style="color:#D35400">Download on GitHub:</h4>
+        
+        <a href="https://github.com/LordCelin/exams">https://github.com/LordCelin/exams</a>
+        <p>See the Symfony official documentation for more information: <a href="https://symfony.com/doc/current/index.html">https://symfony.com/doc/current/index.html</a>
+        <br/>
+        <br/>
+        <h1 style="color:#1A5276">Before to use</h1>
+        <br/>
+        
+        <h2 style="color:#A93226">Install</h2>
+        <br/>
+        
+        <p>Install php (for development, you can install wamp, it installs php and you'll have a phpmyadmin local page), then install composer</p>
+        <a href="https://getcomposer.org/download/">https://getcomposer.org/download/</a>
+        <p>Then, you have to install all components of composer already used in the project:</p>
+        
+        <h4 style="color:#633974">Mandatory for all</h4>
+        
+        <ul>
+        <li>Go to a terminal, in the folder of the project, and copy 'composer install'</li>
+        <li><pre style="color:red">cd exam_manager</pre></li>
+        <li><pre style="color:red">composer install</pre></li>
+        </ul>
+        <br/>
+        <p>Optional: For development, you can install the symfony server (always in your folder in the terminal):</p>
+        <p>composer require symfony/web-server-bundle --dev</p>
+        <br/>
+        <p>For local development, run your server with:</p>
+        <p>php bin/console server:run</p>
+        <br/>
+        
+        <h2 style="color:#A93226">Database</h2>
+        <br/>
+        
+        <h3 style="color:#D35400">Edit this file:</h3>
+        
+        <pre style="color:green">.env.dist</pre>
+        <p>To configure your database, edit this line:</p>
+        <p>"DATABASE_URL=mysql://db_user:db_password@127.0.0.1:3306/db_name"</p>
+        <p>with your username and password, and the name of your database.</p>
+        <br/>
+        
+        <h3 style="color:#D35400">Create all tables:</h3>
+        
+        <p>delete files in <pre style="color:green" >src / Migrations</pre> if they exist (exept the gitignore file).</p>
+        <p>In your terminal, in the folder of the project, copy:</p>
+        <pre style="color:red">php bin/console doctrine:migrations:diff</pre>
+        <p>and next</p>
+        <pre style="color:red">php bin/console doctrine:migrations:migrate</pre>
+        <br/>
+        
+        <h2 style="color:#A93226">Passwords</h2>
+        <br/>
+        
+        <h3 style="color:#D35400">Change users password</h3>
+        
+        <p>In this project, you have an automatic password when user is create, set to '123', you have to choose another one.</p>
+        <p>You have to configure it in file:</p>
+        <pre style="color:green">src / Controller / UserController.php</pre>
+        <p>Edit the line 46 wich set the password to 123.</p>
+        <p>Next, change the text of the email notification in the file:</p>
+        <pre style="color:green">src / Utils / Mail.php</pre>
+        <p>Modify two functions: mailNewUser & mailResetPsswrd who informs users of their new password</p>
+        <br/>
+        
+        <h3 style="color:#D35400">Change admin password</h3>
+        
+        <p>Admin password is set to 'ExamAdmin123', change it in the file:</p>
+        <pre style="color:green">config / packages / security.yaml</pre>
+        <p>You can see that all passwords are encoded in bcrypt, and see admin password encoded at line 29.</p>
+        <p>To edit this password, you have to write it encoded, for this, copy this line in a terminal:</p>
+        <pre style="color:red">php bin/console security:encode-password</pre>
+        <p>Choose a new password, and copy past the result from the terminal to the file.</p>
+        <br/>
+        
+        <h2 style="color:#A93226">Bootstrap</h2>
+        <br/>
+        
+        <p>This project use Bootstap for the front-end, you can see that in:</p>
+        <pre style="color:green">templates / base.html.twig</pre>
+        <p>(All templates herits from this file.)</p>
+        <p>If the website looks with no front-end, try to install yarn in the project folder ??</p>
+        <p>Templates use bootstrap, you can edit the templates to modify the front-end. Twig files are for front-end.</p>
+        <p>But Bootstrap is used for the forms too. To not use it, you can delete the last line 'form_themes: ['bootstrap_4_layout.html.twig']' in the file:</p>
+        <pre style="color:green">config / packages / twig.yaml</pre>   
+        <br/>
+        
+        <h2 style="color:#A93226">E-mails</h2>
+        <br/>
+        
+        <p>E-mails are already wrote, but we can't use emails in localhost. After deployment, you have to decomment lines with the php mail function in:</p>
+        <pre style="color:green">src / Utils / Mail.php</pre>
+        <br/>
+        
+        <h2 style="color:#A93226">Architecture</h2>
+        <br/>
+        
+        <p>All controllers in src / Controller are php files</p>
+            
+        config / packages / security.yaml : redirect after login, encoder, 
+        config / services.yaml : config files path (parameters)
+        config/package/doctrine.yaml ??
+        au moins 3 utilisateurs
+        
+        
+        <h2 style="color:#A93226">To use application</h2>
+        <p>The website can work only if you have minimum 2 intern users (1 </p>
+
+        How to use
+        </div>
+    </body>
+</html>

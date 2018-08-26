@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="1"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/celin/Documents/Exam%20Management/exam_manager/src/Entity/Subjectbyusers.php</file>
-            <file>file:/C:/Users/celin/Documents/Exam%20Management/exam_manager/src/Entity/Subjects.php</file>
-            <file>file:/C:/Users/celin/Documents/Exam%20Management/exam_manager/src/Entity/Validations.php</file>
-            <file>file:/C:/Users/celin/Documents/Exam%20Management/exam_manager/src/Entity/Users.php</file>
-            <file>file:/C:/Users/celin/Documents/Exam%20Management/exam_manager/src/Controller/ExamViewController.php</file>
-            <file>file:/C:/Users/celin/Documents/Exam%20Management/exam_manager/src/Entity/Departments.php</file>
-            <file>file:/C:/Users/celin/Documents/Exam%20Management/exam_manager/src/Controller/SubmitController.php</file>
+            <file>file:/C:/Users/celin/Documents/Exam%20Management/exam_manager/src/Utils/Mail.php</file>
+            <file>file:/C:/Users/celin/Documents/Exam%20Management/exam_manager/templates/in_progress/index.html.twig</file>
+            <file>file:/C:/Users/celin/Documents/Exam%20Management/exam_manager/README.html</file>
+            <file>file:/C:/Users/celin/Documents/Exam%20Management/exam_manager/src/Controller/HomeController.php</file>
+            <file>file:/C:/Users/celin/Documents/Exam%20Management/exam_manager/src/Controller/OwnerValidationController.php</file>
+            <file>file:/C:/Users/celin/Documents/Exam%20Management/exam_manager/src/Controller/DeleteController.php</file>
             <file>file:/C:/Users/celin/Documents/Exam%20Management/exam_manager/templates/home/index.html.twig</file>
-            <file>file:/C:/Users/celin/Documents/Exam%20Management/exam_manager/src/Entity/Exams.php</file>
         </group>
     </open-files>
 </project-private>

@@ -53,6 +53,8 @@ class DeleteController extends Controller
     public function deleteExam($exam_id)
     {
             // RESTRICT ACESS
+        $currentuser = $this->getUser();
+        
         if($currentuser->getSecretaryMember() != 1 && $currentuser->getHod() != 1)
         {
             return $this->redirectToRoute('error');
@@ -63,24 +65,26 @@ class DeleteController extends Controller
         
             // DELETE FILE
         $fileSystem = new Filesystem();
-        $fileSystem->remove(array('files_directory', $myexam->getFileName()));
+        $file = $myexam->getFileName();
+        $fileSystem->remove('uploads/files/'.$file);
         
-            // PICK HIS VALIDATIONS
+            // PICK ITS VALIDATIONS
         $repository2 = $this->getDoctrine()->getRepository(Validations::class);
-        $hisvalidations = $repository2->findBy(['examId' => $exam_id]);
+        $itsvalidations = $repository2->findBy(['examId' => $exam_id]);
         
             // DELETE IN DOCTRINE DB
         $entityManager = $this->getDoctrine()->getManager();
         
-        foreach ($hisvalidations as $one)
+        foreach ($itsvalidations as $one)
         {
+            $fileSystem2 = new Filesystem();
+            $fileval = $one->getFileName();
+            $fileSystem2->remove('uploads/files/'.$fileval);
             $entityManager->remove($one);
-            $fileSystem->remove(array('files_directory', $one->getFileName()));
         }
         $entityManager->remove($myexam);
         $entityManager->flush();
-        
-        
+                
         
         return $this->redirectToRoute('in_progress'); 
     }

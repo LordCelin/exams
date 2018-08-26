@@ -18,6 +18,7 @@
             <tr>
                 <th>Date (y-m-d)</th>
                 <th>Asker</th>
+                <th>Subject</th>
                 <th>Description</th>
                 <th>Submitter</th>
                 <th>Deadline (y-m-d)</th>
@@ -34,6 +35,7 @@
                         {% endif %}
                     {% endfor %}
                 </td>
+                <td>{{exam.subject}}</td>
                 <td>{{exam.description}}</td>
                 <td>
                     {% for user in users %}
@@ -61,6 +63,7 @@
                 <th>Asker</th>
                 <th>Submission (y-m-d)</th>
                 <th>Submitter</th>
+                <th>Subject</th>
                 <th>Title</th>
                 <th>Deadline (y-m-d)</th>
                 <th></th>
@@ -85,6 +88,7 @@
                         {% endif %}
                     {% endfor %}
                 </td>
+                <td>{{exam.subject}}</td>
                 <td>{{exam.title}}</td>
                 <td>{{exam.deadline}}</td>
                 <td><a href="{{ path('exam_view', {'exam_id': exam.exam_id }) }}" class="btn btn-info">See</a></td>
@@ -105,6 +109,7 @@
                 <th>Asker</th>
                 <th>Submission (y-m-d)</th>
                 <th>Submitter</th>
+                <th>Subject</th>
                 <th>Title</th>
                 <th>Deadline (y-m-d)</th>
                 <th></th>
@@ -129,6 +134,7 @@
                         {% endif %}
                     {% endfor %}
                 </td>
+                <td>{{exam.subject}}</td>
                 <td>{{exam.title}}</td>
                 <td>{{exam.deadline}}</td>
                 <td><a href="{{ path('exam_view', {'exam_id': exam.exam_id }) }}" class="btn btn-info">See</a></td>
@@ -148,6 +154,7 @@
                 <th>Asker</th>
                 <th>Submission (y-m-d)</th>
                 <th>Submitter</th>
+                <th>Subject</th>
                 <th>Title</th>
                 <th>Deadline (y-m-d)</th>
                 <th></th>
@@ -172,6 +179,7 @@
                         {% endif %}
                     {% endfor %}
                 </td>
+                <td>{{exam.subject}}</td>
                 <td>{{exam.title}}</td>
                 <td>{{exam.deadline}}</td>
                 <td><a href="{{ path('exam_view', {'exam_id': exam.exam_id }) }}" class="btn btn-info">See</a></td>
